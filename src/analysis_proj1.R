@@ -76,7 +76,7 @@ knn.preds <- rep(NA, 100);
 for (i in 1:100) {
 	tree.model <- tree(person ~ . - repetition, data = df, subset = setdiff(1:100, i));
 	tree.preds[i] <- predict(tree.model, df[i, ], type = "class");
-	knn.preds[i] <- knn(df[setdiff(1:100, i), ], df[i, ], cl = df[setdiff(1:100, i), ]$person, k = 3);
+	knn.preds[i] <- knn(df[setdiff(1:100, i), 3:302], df[i, 3:302], cl = df[setdiff(1:100, i), ]$person, k = 3);
 }
 tree.acc <- mean(tree.preds == df$person);
 knn.acc <- mean(knn.preds == df$person);
