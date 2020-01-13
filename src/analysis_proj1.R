@@ -1,7 +1,7 @@
 ######
 #Initial work on project 1
 ######
-#setwd("/home/sorenwh/Nextcloud/semester3/StatProj/afl/02445projects/src")
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 require(tree);
 library(class);
 
