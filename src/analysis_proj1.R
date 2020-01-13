@@ -2,6 +2,8 @@
 #Initial work on project 1
 ######
 #setwd("/home/sorenwh/Nextcloud/semester3/StatProj/afl/02445projects/src")
+require(tree);
+library(class);
 
 rm(list = ls());
 
@@ -43,11 +45,21 @@ for (i in 1:300) {
 		names.[i+2] <- paste(c("z", as.character(i-200)), collapse = "");
 	}
 }
-names(df) <- names.;
+names(df) <- names.;names. <- rep(NA, 302);
+names.[1] <- "person"; names.[2] <- "repetition";
+for (i in 1:300) {
+	if (i <= 100) {
+		names.[i+2] <- paste(c("x", as.character(i)), collapse = "");
+	} else if (i <= 200) {
+		names.[i+2] <- paste(c("y", as.character(i-100)), collapse = "");
+	} else {
+		names.[i+2] <- paste(c("z", as.character(i-200)), collapse = "");
+	}
+}
+
 for (i in 1:10) {
 	for (j in 1:10) {
 		idx <- (i-1) * 10 + j;
-		print(idx);
 		df$person[idx] <- i;
 		df$repetition[idx] <- j;
 		df[idx, 3:302] <- as.vector(data_collection[[i]][[j]]);
@@ -56,12 +68,20 @@ for (i in 1:10) {
 df$person <- as.factor(df$person);
 df$repetition <- as.factor(df$repetition);
 
-logfit <- lm(person ~ . - repetition, data = df);
-
-
-
-
-
+# Splits into train and test
+# Performs leave-one-out cross-validation
+# Classification trees and KNN is used
+tree.preds <- rep(NA, 100);
+knn.preds <- rep(NA, 100);
+for (i in 1:100) {
+	tree.model <- tree(person ~ . - repetition, data = df, subset = setdiff(1:100, i));
+	tree.preds[i] <- predict(tree.model, df[i, ], type = "class");
+	knn.preds[i] <- knn(df[setdiff(1:100, i), ], df[i, ], cl = df[setdiff(1:100, i), ]$person, k = 3);
+}
+tree.acc <- mean(tree.preds == df$person);
+knn.acc <- mean(knn.preds == df$person);
+tree.acc
+knn.acc
 
 
 
