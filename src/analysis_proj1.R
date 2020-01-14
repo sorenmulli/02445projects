@@ -35,6 +35,16 @@ plot(example[,1], example[,2], col = colors,
 legend(20, -0.5,title="Colour: z-coord",legend=round( quantile(example[,3], (1:10)/10))
 ,col =rbPal(10),pch=20)
 
+example2 <- data_collection[[2]][[1]];
+rbPal <- colorRampPalette(c('red','blue'));
+colors <- rbPal(10)[as.numeric(cut(example2[,3],breaks = 10))];
+plot(example2[,1], example2[,2], col = colors,
+     main = "Experiment 4, person 2, repetition 1: Arm movement data" , ylab = "Y-coord.", xlab ="X-coord.");
+#legend(10, -0.5,legend = "Colour: z-coord.",);
+
+legend(10, 1,title="Colour: z-coord",legend=round( quantile(example2[,3], (1:10)/10))
+       ,col =rbPal(10),pch=20)
+
 
 # Creates dataframe with columns person, rep, 100x, 100y, 100z
 df <- data.frame(matrix(ncol = 302, nrow = 100));
@@ -115,11 +125,11 @@ for (i in 1:16){ #experiments
 }
 
 arm_dataframe <- data.frame(
-  "pos" <- raw_movement,
-  "coordinate" <- as.factor(coordinate),
-  "repetition" <- as.factor(repetition),
-  "person" <- as.factor(person),
-  "experiment" <- as.factor(experiment)
+  pos <- raw_movement,
+  coordinate <- as.factor(coordinate),
+  repetition <- as.factor(repetition),
+  person <- as.factor(person),
+  experiment <- as.factor(experiment)
 )
 #Use last (control) experiment as reference
 levels(arm_dataframe$experiment) <-c(2:16, 1)
