@@ -121,6 +121,9 @@ arm_dataframe <- data.frame(
   "person" <- as.factor(person),
   "experiment" <- as.factor(experiment)
 )
+#Use last (control) experiment as reference
+levels(arm_dataframe$experiment) <-c(2:16, 1)
+  
 model <- lm(pos ~ coordinate + repetition + person+ experiment)
 anova(model)
 summary(model)
