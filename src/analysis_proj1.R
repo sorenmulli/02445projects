@@ -5,11 +5,15 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 require(tree);
 library(class);
 
+#library(jsonlite)
+#exportJSON <- toJSON(armdata)
+#write(exportJSON, "armdata.json")
+
 rm(list = ls());
-
 load(file = "data/armdata.RData");
-our_experiment_no <- 4;
 
+
+our_experiment_no <- 4;
 data_collection <- armdata[[our_experiment_no]];
 
 #Person 1, repetition 1
