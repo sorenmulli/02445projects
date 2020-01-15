@@ -1,6 +1,7 @@
 ######
 #Initial work on project 1
 ######
+
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 require(tree);
 library(class);
@@ -12,6 +13,7 @@ library(class);
 rm(list = ls());
 load(file = "data/armdata.RData");
 
+mean(is.na(unlist(armdata, recursive = T) ))
 
 our_experiment_no <- 4;
 data_collection <- armdata[[our_experiment_no]];
@@ -19,7 +21,8 @@ data_collection <- armdata[[our_experiment_no]];
 #Person 1, repetition 1
 #par(mfrow = c(2,1))
 # data_collection[[person]][[repetition]]
-example <- data_collection[[1]][[1]];
+example <- data_collection[[1]][[2]];
+example
 summary(example);
 
 plot(example[,1], ylim = c(-10, 60), col = "red",
@@ -89,17 +92,70 @@ df$repetition <- as.factor(df$repetition);
 # Splits into train and test
 # Performs leave-one-out cross-validation
 # Classification trees and KNN is used
+set.seed(69)
 tree.preds <- rep(NA, 100);
 knn.preds <- rep(NA, 100);
+baseline <- rep(1, 100)
 for (i in 1:100) {
 	tree.model <- tree(person ~ . - repetition, data = df, subset = setdiff(1:100, i));
 	tree.preds[i] <- predict(tree.model, df[i, ], type = "class");
 	knn.preds[i] <- knn(df[setdiff(1:100, i), 3:302], df[i, 3:302], cl = df[setdiff(1:100, i), ]$person, k = 3);
 }
-tree.acc <- mean(tree.preds == df$person);
+
 knn.acc <- mean(knn.preds == df$person);
-tree.acc
+tree.acc <- mean(tree.preds == df$person);
+
 knn.acc
+tree.acc
+
+#3NN: Classifier 1
+#Tree: Classifier 2
+mcnemar <- function(preds1, preds2,  true){
+  n <- length(true)
+  n11 <- sum(preds1 == true & preds2== true)
+  
+  n12 <- sum(preds1 == true & preds2 != true)
+  n21 <- sum(preds1 != true & preds2 == true)
+  
+  n22 <- sum(preds1 != true & preds2 != true)
+  
+  n11; n12; n21; n22
+  
+  
+  r <- n12 / (n12 + n21); r
+  #Null hypothesis r = 0.5
+  #Test in binomial distribution
+  
+  m <- min(c(n12,n21))
+  prob <- 1/2
+  N <- n12 + n21
+  p <- 2*pbinom(m, N, prob)
+  print(sprintf("p value: %s", p))
+  
+  
+  
+  alpha <- 0.05
+  theta.hat <- (n12-n21)/n; theta.hat
+  Q <- (n^2 * (n+1)*(theta.hat +1)*(1-theta.hat))/(n*(n12+n21)-(n12-n21)^2)
+  Beta.p <- (theta.hat+1)/2 * (Q-1)
+  Beta.q <- (1-theta.hat)/2 * (Q-1)
+  
+  theta.low <- 2*qbeta(alpha, Beta.p, Beta.q)-1
+  theta.upper <- 2*qbeta(1-alpha, Beta.p, Beta.q)-1
+  print(sprintf("theta_hat: %s", theta.hat))
+  
+  print(sprintf("theta confidence interval: [%s, %s]", theta.low, theta.upper))
+  
+  
+
+}
+mcnemar(knn.preds, tree.preds, df$person)
+
+mcnemar(knn.preds,baseline, df$person)
+
+mcnemar(tree.preds,baseline, df$person)
+
+
 
 #NEW DATA FRAME for ANOVA
 rm(list = ls());
