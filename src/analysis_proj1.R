@@ -5,7 +5,9 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 require(tree);
 library(class);
+library(plotly);
 
+#install.packages("plotly")
 #library(jsonlite)
 #exportJSON <- toJSON(armdata)
 #write(exportJSON, "armdata.json")
@@ -13,44 +15,55 @@ library(class);
 rm(list = ls());
 load(file = "data/armdata.RData");
 
-mean(is.na(unlist(armdata, recursive = T) ))
+#mean(is.na(unlist(armdata, recursive = T) ))
 
 our_experiment_no <- 4;
 data_collection <- armdata[[our_experiment_no]];
 
+
+#plot_ly(x=example2[,1], y=example2[,2], z=example2[,3], type = "scatter3d", mode = "lines")
+
 #Person 1, repetition 1
 #par(mfrow = c(2,1))
 # data_collection[[person]][[repetition]]
-example <- data_collection[[1]][[2]];
-example
-summary(example);
 
-plot(example[,1], ylim = c(-10, 60), col = "red",
-	 main = "Experiment 4, person 1, repetition 1: Arm movement data",
-	 xlab = "Coordinate no.", ylab = "Coordinate value");
-points(example[,2], col = "blue");
-points(example[,3], col = "green");
-legend(1, 60, legend=c("x-coord.", "y-coord.", "z-coord."),
-       col=c("red", "blue", "green"), lty=1:2, cex=0.8);
+#plot(example[,1], ylim = c(-10, 60), col = "red",
+#	 main = "Experiment 4, person 1, repetition 1: Arm movement data",
+#	 xlab = "Coordinate no.", ylab = "Coordinate value");
+#points(example[,2], col = "blue");
+#points(example[,3], col = "green");
+#legend(1, 60, legend=c("x-coord.", "y-coord.", "z-coord."),
+#       col=c("red", "blue", "green"), lty=1:2, cex=0.8);
 
-rbPal <- colorRampPalette(c('red','blue'));
-colors <- rbPal(10)[as.numeric(cut(example[,3],breaks = 10))];
-plot(example[,1], example[,2], col = colors,
-	 main = "Experiment 4, person 1, repetition 1: Arm movement data" , ylab = "Y-coord.", xlab ="X-coord.");
+#example <- data_collection[[1]][[1]];
+#xample
+#summary(example);
+
+
+#rbPal <- colorRampPalette(c('red','blue'));
+
+
+
+#colors <- rbPal(10)[as.numeric(cut(example[,3],breaks = 10))];
+#plot(example[,1], example[,2], col = colors,
+#	 main = "Experiment 4, person 1, repetition 1: Arm movement data",
+#	 ylab = "Y-coord.", xlab ="X-coord.");
+#lines(example[,1], example[,2])
+
+#legend(20, -0.5,title="Colour: z-coord",legend=round( quantile(example[,3], (1:10)/10))
+#,col =rbPal(10),pch=20)
+
+#example2 <- data_collection[[2]][[1]];
+#rbPal <- colorRampPalette(c('red','blue'));
+#colors <- rbPal(10)[as.numeric(cut(example2[,3],breaks = 10))];
+#plot(example2[,1], example2[,2], col = colors,
+#     main = "Experiment 4, person 2, repetition 1: Arm movement data" , ylab = "Y-coord.", xlab ="X-coord.");
 #legend(10, -0.5,legend = "Colour: z-coord.",);
 
-legend(20, -0.5,title="Colour: z-coord",legend=round( quantile(example[,3], (1:10)/10))
-,col =rbPal(10),pch=20)
+#legend(10, 1,title="Colour: z-coord",legend=round( quantile(example2[,3], (1:10)/10))
+ #      ,col =rbPal(10),pch=20)
 
-example2 <- data_collection[[2]][[1]];
-rbPal <- colorRampPalette(c('red','blue'));
-colors <- rbPal(10)[as.numeric(cut(example2[,3],breaks = 10))];
-plot(example2[,1], example2[,2], col = colors,
-     main = "Experiment 4, person 2, repetition 1: Arm movement data" , ylab = "Y-coord.", xlab ="X-coord.");
-#legend(10, -0.5,legend = "Colour: z-coord.",);
 
-legend(10, 1,title="Colour: z-coord",legend=round( quantile(example2[,3], (1:10)/10))
-       ,col =rbPal(10),pch=20)
 
 
 # Creates dataframe with columns person, rep, 100x, 100y, 100z
@@ -95,7 +108,6 @@ df$repetition <- as.factor(df$repetition);
 set.seed(69)
 tree.preds <- rep(NA, 100);
 knn.preds <- rep(NA, 100);
-baseline <- rep(1, 100)
 for (i in 1:100) {
 	tree.model <- tree(person ~ . - repetition, data = df, subset = setdiff(1:100, i));
 	tree.preds[i] <- predict(tree.model, df[i, ], type = "class");
@@ -149,6 +161,8 @@ mcnemar <- function(preds1, preds2,  true){
   
 
 }
+baseline <- sample(1:10, 100, replace = T)
+mean(baseline == df$person)
 mcnemar(knn.preds, tree.preds, df$person)
 
 mcnemar(knn.preds,baseline, df$person)
@@ -197,3 +211,44 @@ levels(arm_dataframe$experiment) <-c(2:16, 1)
 model <- lm(pos ~ coordinate + repetition + person+ experiment)
 anova(model)
 summary(model)
+
+
+plot1_dataframe <- subset(arm_dataframe, experiment == 4 & (person == 1))
+plot1_dataframe$x_coord <- plot1_dataframe$pos[plot1_dataframe$coordinate == "x"]
+plot1_dataframe$y_coord <- plot1_dataframe$pos[plot1_dataframe$coordinate == "y"]
+plot1_dataframe$z_coord <- plot1_dataframe$pos[plot1_dataframe$coordinate == "z"]
+plot1_dataframe$repetitions <- plot1_dataframe$repetition[plot1_dataframe$coordinate == "z"]
+
+plot_ly(plot1_dataframe,
+        x=~x_coord, y=~y_coord, z=~z_coord,
+        type = "scatter3d", mode = "lines",
+        line = list(width = 4), 
+        split = ~repetitions
+)%>%
+layout(
+  title = "Arm movement data: Experiment 4, person 1, ten repetitions",
+  scene = list(
+    xaxis = list(title = "X"),
+    yaxis = list(title = "Y"),
+    zaxis = list(title = "Z")
+  ))
+
+
+
+plot2_dataframe <- subset(arm_dataframe, experiment == 4 & (person == 2))
+plot2_dataframe$x_coord <- plot2_dataframe$pos[plot1_dataframe$coordinate == "x"]
+plot2_dataframe$y_coord <- plot2_dataframe$pos[plot1_dataframe$coordinate == "y"]
+plot2_dataframe$z_coord <- plot2_dataframe$pos[plot1_dataframe$coordinate == "z"]
+plot2_dataframe$repetitions <- plot2_dataframe$repetition[plot1_dataframe$coordinate == "z"]
+
+plot_ly(plot2_dataframe,
+        x=~x_coord, y=~y_coord, z=~z_coord,
+        type = "scatter3d", mode = "lines", line = list(width = 4), split = ~repetitions)%>%
+layout(
+  title = "Arm movement data: Experiment 4, person 2, ten repetitions",
+  scene = list(
+    xaxis = list(title = "X"),
+    yaxis = list(title = "Y"),
+    zaxis = list(title = "Z")
+  ))
+x

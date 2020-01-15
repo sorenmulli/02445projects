@@ -8,6 +8,8 @@ Phosphorous
 summary(Phosphorous)
 plot(Phosphorous)
 
+cor(Phosphorous$olsenP, Phosphorous$DGT) #0.8759104
+
 nl_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = Phosphorous,
                   start = list(alfa = 90 , beta = 1))
 summary(nl_model_dgt)

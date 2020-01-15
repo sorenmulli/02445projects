@@ -1,4 +1,4 @@
-% !TeX spellcheck = da_DK
+% !TeX spellcheck = en_GB
 \documentclass[12pt,fleqn]{article}
 
 \usepackage[danish]{babel}
@@ -6,6 +6,8 @@
 \usepackage{MediocreMike}
 %\usepackage{Blastoise}
 
+\usepackage{float}
+\usepackage[caption = false]{subfig}
 \title{}
 \author{Asger Schultz}
 \date{\today}
@@ -37,68 +39,105 @@
 \maketitle
 %\thispagestyle{fancy}
 %\tableofcontents
+--Identifying people from movement curve\\
+--Are arm movements of different objects significantly different\\
+--Trains, evaluates binary classification tree and 3-nearest neighbour classification to identify people. McNemars test: Find that 3-nearest neighbours is significantly than class. tree and that both are significantly better than baseline.\\
+--Using four-way ANOVA, it is found that there is significant difference in arm movements for different experiments.
+\tableofcontents
+\newpage 
+
+
+\section{Introduction}
+
+-- Briefly introduce the background \& setting of the problem, as well as the aim of the report. Furthermore, you could give a very short description of the analysis that will be applied.
+
 
 \section{Data}
 \begin{itemize}
-	\item Experiment 4
+	\item 16 experiments
+	\item Our Experiment: Experiment 4
 	\item 10 -People: 10 Repetitions
 	\item Each repetition: 100 3D-coordinates
+	\item All data points are continuous positional data
+	\item For machine learning: Consider data as a 10-class (person) problem with 10 observations (repetitions) each consisting of 300 features 
 \end{itemize}
+\begin{figure}[H]
+		
+	\centering
+	\subfloat{
+		\includegraphics[width=.5\linewidth]{p1_3d_example1}
+	}
+	\subfloat{5
+		\centering
+		\includegraphics[width=.5\linewidth]{p1_3d_example2}
+	}
+\end{figure}
 
-\section{Machine Learning task}
-\subsection{The task: Classification}
-\begin{itemize}
-\item For machine learning: Consider data as a 10-class (person) problem with 10 observations (repetitions) each consisting of 300 features 
-\item High dimensional 10-class classification 
-\item Plot: Seems nonlinear (parabolic data)
-\item Plot: For humans: Easy difference in \(y\)-coordinate between first repetitions of the two initial test subjects.
-\end{itemize}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\linewidth]{p1_example}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\linewidth]{p1_example2}
-\end{figure}
-\subsection{Models and training}
-\begin{itemize}
-	\item Considers non-linear models
-	\item KNN:
-	\item Classification trees: Hunt's algorithm
-	\item Baseline: 10\pro
-\end{itemize}
-\subsection{Performance evaluation}
-\begin{itemize}
-	\item Leave-one-out crossvalidation
-	\item McNemar's test
-\end{itemize}
+
+\section{Methods and analysis}
+
+
+\subsection{Machine Learning Task: Classification}
+-- High dimensional 10-class classification 
+\paragraph{Models}
+---Binary classification tree: Hunt's algorithm\\
+---3NN: The K value was chosen before based on data dimensionality\\
+-- Baseline: 10\pro\\  
+
+\paragraph{Performance evaluation}
+--Leave-one-out crossvalidation\\
+--McNemar's test\\
+-- Note, for McNemar's test: Baseline makes a difference. Was chosen as random guesses, as no single class should be preferred.
+\subsection{Test of experiment effect}
+
+-- Introduce ANOVA: Model assumptions
+-- Introduce factors
+
+
+
+\section{Results}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.7\linewidth]{mcnemar_results}
 \end{figure}
-\section{Test of experiment effect}
-\begin{itemize}
-	\item Expectation: Yes, significant difference as 15 different obtacle avoidance tests + control is considered
-\end{itemize}
-\begin{itemize}
-	\item Introduce ANOVA: Model assumptions
-	\item Introduce factors
-\end{itemize}
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\linewidth]{p1_anova}
+\centering
+\includegraphics[width=.7\linewidth]{p1_anova}
 \end{figure}
-\begin{itemize}
-	\item Yes, experiment is significant. 
-	\item Surprise: Repetition is also significant though
-	\item Which coordinate it is explains the largest part of data variability but experiment no. comes in second
-	\item Low residual variance when compared to within-group variance
-	\item All experiments are (at 5\pro) significantly different from the control experiment which has been set to reference
-\end{itemize}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.7\linewidth]{p1_anova_summay}
+\end{figure}
+
+
+Yes, experiment is significant.\\
+	
+-- All experiments are (at 5\pro) significantly different from the control experiment which has been set to reference
+
+\section{Discussion}
+\subsection{Classification of persons}
+--Plot: Seems nonlinear (parabolic data)\\
+-- Plot: For humans: Easy difference in \(y\)-coordinate between first repetitions of the two initial test subjects.
+
+\subsection{Test of difference in experiments}
+-- Expectation: Yes, significant difference as 15 different obtacle avoidance tests + control is considered\\
+-- Surprise: Repetition is also significant though\\
+-- Which coordinate it is explains the largest part of data variability but experiment no. comes in second\\
+-- Low residual variance when compared to within-group variance\\
+-- Model assumptions: Plot\\
+
+\appendix
+\section{hwo}
+\begin{figure}[H]
+	
+	\centering
+	\subfloat{
+		\includegraphics[width=.5\linewidth]{p1_example}
+	}
+	\subfloat{5
+		\centering
+		\includegraphics[width=.5\linewidth]{p1_example2}
+	}
 \end{figure}
 \end{document}
 

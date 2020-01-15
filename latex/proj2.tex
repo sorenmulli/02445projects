@@ -37,14 +37,27 @@
 \maketitle
 %\thispagestyle{fancy}
 %\tableofcontents
-
+-- 
+\tableofcontents
+\newpage 
 \section{Data}
-\begin{itemize}
-	\item Yaw
-\end{itemize}
+--
 
-\section{Influence of bioavailable phosporous}
-correlations: 0.473338, 0.3560754
+
+\section{Methods and analysis}
+\subsection{Recommended measure}
+-- Correlation and corr test\\
+-- Fit of Michaelis-Menten model\\
+-- Consider 
+\subsection{Yield influence of bioavailability}
+--ANCOVA using DGT and location\\
+--ANCOVA using olsenP and location
+\section{Results}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.9\linewidth]{p2_corrplot}
+	\caption{Visualization of a Correlation Matrix. On top the (absolute) value of the correlation plus the result of the cor.test as stars. On bottom, the bivariate scatterplots, with a fitted line}
+\end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.8\linewidth]{dgt_mmm}
@@ -54,15 +67,21 @@ correlations: 0.473338, 0.3560754
 	\includegraphics[width=.8\linewidth]{oP_mm}
 \end{figure}
 
+\begin{align*}
+	& \sqrt{MSE_{dgt}}	 = 10.84
+	&& \sqrt{MSE_{olsenP}} = 14.65
+\end{align*}
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=.7\linewidth]{simpleDGT}
+%\end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\linewidth]{simpleDGT}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\linewidth]{simpleOP}
-\end{figure}
+
+
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=.7\linewidth]{simpleOP}
+%\end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.7\linewidth]{anovaDGT}
@@ -71,6 +90,8 @@ correlations: 0.473338, 0.3560754
 	\centering
 	\includegraphics[width=.7\linewidth]{anovaOP}
 \end{figure}
+
+\section{Discussion}
 
 \end{document}
 
