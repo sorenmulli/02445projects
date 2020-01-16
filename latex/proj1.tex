@@ -205,18 +205,12 @@ Yes, experiment is significant.\\
 
 \section{Discussion}
 \subsection{Classification of persons}
-The initial visualizations of the data in the 3D and 2D scatterplots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction. However, the expectation is that this ease of classification is more limited for classifying between all ten people.  
+%The initial visualizations of the data in the 3D and 2D scatter plots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction.  
+It is seen that the expectation of some accuracy was confirmed: The 3-nearest neighbour model is the best at 60\pro\ and is significantly better than the classification tree and they are both significantly better than the random guesses. The greater aim of reliably discerning people based on movement is far from achieved at an performance of 60\pro. However, this significant result with these un-optimized models shows a promise for the machine learning task as there is a number of possible improvements. 
 
--- Assumptions for McNemar
 
-It is seen that the expectation of some accuracy was confirmed: The 3-nearest neighbour model is the best at 60\pro and is signficantly better than the classification tree and they are both significantly better than the random guesses. The greater aim of reliably discerning people based on movement is far from achieved at this performance. However, there is a number of possible improvements.
 
--- More complex models
--- Use whole experiment data set to general 
- 
-
-The models were not tested for complexity controlling hyperparameters such as \(K\)
-
+The models were not tested for complexity controlling hyper parameters such as \(K\) for the KNN or the impurity function for the tree model and possible improvements could be found here. A larger improvement could be found in much more complex models for this high-dimensional data set such as random forests or deep neural networks. More generalizable performance could also be found by using the entire data set, not just experiment 4, to find more general personal  features and mannerisms.
 
 \subsection{Test of difference in experiments}
 -- Expectation: Yes, significant difference as 15 different obtacle avoidance tests + control is considered\\
