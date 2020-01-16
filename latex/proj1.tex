@@ -101,9 +101,9 @@ To test whether the differences in the accuracy estimates are significant, McNem
 This test is used as described in \cite[Method 11.3.2]{Tue} and uses the beta distribution as a posterior to achieve a method for computing confidence interval of the difference in classifier accuracy.
 From this test, a \(p\)-value for the null hypothesis that the two classifiers have the same accuracy can also be computed by using the binomial cumulative probability density function.
 
-These tests consider the matched-pair matrix which counts the number of times the classifiers both are wrong, the number of times they both are right, the number of times one is better than the other and vice versa.
+These tests consider the matched-pair matrix which counts the number of times the classifiers both are wrong, the number of times they both are right, the number of times one is better than the other (\(n_{12}\)) and vice versa (\(n_{21}\)).
 Intuitively, this takes into account that some classifications might be more difficult than others. 
-This is the motivation for the random baseline.
+This is the motivation for the random baseline. It is noted that these parametric comparisons are approximations and \cite{Tue} states that the \(p\)-values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\).
 \subsection{Test of experiment effect}\label{subsec:expeffect}
 Analysis of Variance, or ANOVA, is a method for comparing the means of multiple groups.
 This makes it useful for detecting if there is a significant difference between the experiments.
@@ -114,13 +114,68 @@ In order to use ANOVA, all the 480,000 data points were ravelled into a vector o
 Four similar vectors where then created for the explanatory variables.
 The first contained the coordinates features, such as \texttt{z3} for the third $ z $-value.
 The second contained the person, the third the repetition, and the fourth the experiment number.
-We then used a linear model with R's \texttt{lm} function followed by \texttt{anova} to perform a four-way ANOVA (given the four explanatory variables).
+We then used a linear model with R's \texttt{lm} function followed by \texttt{anova} to perform a four-way ANOVA (given the four explanatory factors).
 
 \section{Results}
-\begin{figure}[H]
+
+\subsection{Classification models}
+
+\paragraph{Point estimates for accuracy}
+
+\begin{align*}
+	& \hat \theta_{Base.}= 12\pro 
+	&& \hat \theta_{Tree} =41\pro 
+	&&&\hat \theta_{3NN} = 60 \pro 
+\end{align*}
+\paragraph{Comparison of 3NN and classification tree}
+Matched pair matrix:
+
+\begin{table}[H]
 	\centering
-	\includegraphics[width=.7\linewidth]{mcnemar_results}
-\end{figure}
+	\begin{tabular}{l|c c}
+		&Tree is correct& Tree is wrong \\
+		\hline
+		3NN is correct &35& 25\\
+		3NN is wrong& 6& 34
+	\end{tabular}
+\end{table}\noindent 
+Estimate for accuracy difference and 99\pro\ confidence interval and \(p\)-value for \(H_0: \theta_{3NN}=\theta_{Tree}\):
+\[
+\widehat{\Delta \theta} = 19\pro,\quad  \Delta \theta\in[7\pro , 30\pro], \quad p = 0.0059 
+\]
+
+\paragraph{Comparison of 3NN and baseline}
+Matched pair matrix:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l|c c}
+		&Baseline is correct& Baseline is wrong \\
+		\hline
+		3NN is correct &7& 53\\
+		3NN is wrong& 5& 35
+	\end{tabular}
+\end{table}\noindent 
+Estimate for accuracy difference and 99\pro\ confidence interval and \(p\)-value for \(H_0: \theta_{3NN}=\theta_{Base.}\):
+\[
+\widehat{\Delta \theta} = 48\pro,\quad  \Delta \theta\in[33\pro , 61\pro], \quad p = 3.5\ctp{-11}
+\]
+\paragraph{Comparison of classification tree and baseline}
+Matched pair matrix:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l|c c}
+		&Baseline is correct& Baseline is wrong \\
+		\hline
+		Tree is correct &2& 39\\
+		Tree is wrong& 10& 49
+	\end{tabular}
+\end{table}\noindent 
+Estimate for accuracy difference and 99\pro\ confidence interval and \(p\)-value for \(H_0: \theta_{Tree}=\theta_{Base.}\):
+\[
+\widehat{\Delta \theta} = 29\pro,\quad  \Delta \theta\in[14\pro , 43\pro], \quad p = 3.8\ctp{-5}
+\]
 \begin{figure}[H]
 \centering
 \includegraphics[width=.7\linewidth]{p1_anova}
@@ -133,12 +188,22 @@ We then used a linear model with R's \texttt{lm} function followed by \texttt{an
 
 Yes, experiment is significant.\\
 	
--- All experiments are (at 5\pro) significantly different from the control experiment which has been set to reference
+-- All experiments are (at 1\pro) significantly different from the control experiment which has been set to reference
 
 \section{Discussion}
 \subsection{Classification of persons}
---Plot: Seems nonlinear (parabolic data)\\
--- Plot: For humans: Easy difference in \(y\)-coordinate between first repetitions of the two initial test subjects.
+The initial visualizations of the data in the 3D and 2D scatterplots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction. However, the expectation is that this ease of classification is more limited for classifying between all ten people.  
+
+-- Assumptions for McNemar
+
+It is seen that the expectation of some accuracy was confirmed: The 3-nearest neighbour model is the best at 60\pro and is signficantly better than the classification tree and they are both significantly better than the random guesses. The greater aim of reliably discerning people based on movement is far from achieved at this performance. However, there is a number of possible improvements.
+
+-- More complex models
+-- Use whole experiment data set to general 
+ 
+
+The models were not tested for complexity controlling hyperparameters such as \(K\)
+
 
 \subsection{Test of difference in experiments}
 -- Expectation: Yes, significant difference as 15 different obtacle avoidance tests + control is considered\\

@@ -137,7 +137,8 @@ mcnemar <- function(preds1, preds2,  true){
   r <- n12 / (n12 + n21); r
   #Null hypothesis r = 0.5
   #Test in binomial distribution
-  
+  print(n11, n12)
+  print(n21, n22)
   m <- min(c(n12,n21))
   prob <- 1/2
   N <- n12 + n21
@@ -162,6 +163,7 @@ mcnemar <- function(preds1, preds2,  true){
 
 }
 baseline <- sample(1:10, 100, replace = T)
+
 mean(baseline == df$person)
 mcnemar(knn.preds, tree.preds, df$person)
 
