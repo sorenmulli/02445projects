@@ -53,14 +53,15 @@
 
 
 \section{Data}
-\begin{itemize}
-	\item 16 experiments
-	\item Our Experiment: Experiment 4
-	\item 10 -People: 10 Repetitions
-	\item Each repetition: 100 3D-coordinates
-	\item All data points are continuous positional data
-	\item For machine learning: Consider data as a 10-class (person) problem with 10 observations (repetitions) each consisting of 300 features 
-\end{itemize}
+The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
+The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
+Thus, the data was structured in a $ 16\times 10\times 10 $ grid, where the first axis is the experiment, the second the person, and the third the repetition.
+For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
+The data had been preprocessed such that every curve was of the same length.\\
+\\
+For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
+For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
+The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
 \begin{figure}[H]
 		
 	\centering
