@@ -185,6 +185,19 @@ Estimate for accuracy difference and 99\pro\ confidence interval and \(p\)-value
 	\includegraphics[width=.7\linewidth]{p1_anova_summay}
 \end{figure}
 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lrrrrr}
+		          &     Df&    Sum Sq& Mean Sq&   F value&    Pr($ < $F)    \\
+		coordinate&    299& 230298000&  770227& 61477.804&  $ < $2.2e-16 ***\\
+		repetition&      9&     10036&    1115&    89.007&  $ < $2.2e-16 ***\\
+		person    &      9&    124551&   13839&  1104.595&  $ < $2.2e-16 ***\\
+		experiment&     15&    433652&   28910&  2307.543&  $ < $2.2e-16 ***\\
+		Residuals & 479631&   6009079&      13& &
+	\end{tabular}
+	\caption{R output from ANOVA. Three asterisks mean significance at a significance level of $ \alpha=0.1\pro $.}
+\end{table}
+
 
 Yes, experiment is significant.\\
 	
