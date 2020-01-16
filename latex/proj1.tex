@@ -97,6 +97,15 @@ It is noted from initial plots -- fig. \ref{fig:trajects} and fig. \ref{fig:2dtr
 -- Introduce ANOVA: Model assumptions
 -- Introduce factors
 
+Analysis of Variance, or ANOVA, is a method for comparing the means of multiple groups.
+This makes it useful for detecting if there is a significant difference between the experiments.
+ANOVA works by testing the likelihood of a given mean's distance to the overall mean is due to random variation, which is done using variability decomposition.
+We assumed the null hypothesis $ H_0: \mu_1=\mu_2=\ldots=\mu_{16} $.\\
+\\
+In order to use ANOVA, all the 480,000 data points were ravelled into a vector of the same length.
+Four similar vectors where then created for the explanatory variables.
+The first contained the coordinates features, such as \texttt{z3} for the third $ z $-value.
+The second contained the person, the third the repetition, and the fourth the experiment number.
 
 
 \section{Results}
