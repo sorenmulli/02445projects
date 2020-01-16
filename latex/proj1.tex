@@ -84,14 +84,21 @@ The target variable was the person who performed the movement, so the goal of ou
 Two machine learning models were chosen to test on this 300-dimensional 10-class data.
 It is noted from initial plots -- fig. \ref{fig:trajects} and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear, such that models that can model nonlinear decision boundaries are considered.
 \paragraph{Models} The two chosen models were a binary classification tree and a 3-nearest neighbour classifier. The classification tree used the implementation of Hunt's algorithm of the \texttt{tree} package in \texttt{R} \cite{Tree}. For splitting criterion, the \textit{deviance} is used which is based on minus two times the log likelihood of the data under each model that the split results in \cite{Deviance}.
----Binary classification tree: Hunt's algorithm\\
----3NN: The K value was chosen before based on data dimensionality\\
--- Baseline: 10\pro\\  
 
+The second model was the \(K\)-nearest neighbour classifier which predicts classes using \(K\) nearest data points in the training set in euclidean distance and tie breaking by increasing \(K\) for the data point as implemented in the \texttt{R} package \texttt{class} \cite{KNN}. Before training on the data set, the hyper parameters of both models were defined and were not subject for testing. \(K\) set to 3 as it was deemed suitable for the 10-class setting.
+
+To evaluate the performance of the models, a classification baseline was set. As the classes are perfectly balanced, a baseline is expected to reach 10\pro\ accuracy. As no class is the largest, the baseline is constructed by randomly guessing classes to avoid skewing the evaluation towards any class as this might make a difference for the McNemar test.
 \paragraph{Performance evaluation}
---Leave-one-out crossvalidation\\
---McNemar's test\\
--- Note, for McNemar's test: Baseline makes a difference. Was chosen as random guesses, as no single class should be preferred.
+To evaluate which machine learning model best predicts which person completed the tasks, leave-one-out cross validation is implemented thus training the models on 99 data points and and testing on the last for each fold.
+From here, 100 predictions are obtained which are used to achieve a point estimate for the accuracy of the classifiers.
+
+To test whether the differences in the accuracy estimates are significant, McNemar's test is used. 
+This test is used as described in \cite[Method 11.3.2]{Tue} and uses the beta distribution as a posterior to achieve a method for computing confidence interval of the difference in classifier accuracy.
+From this test, a \(p\)-value for the null hypothesis that the two classifiers have the same accuracy can also be computed by using the binomial cumulative probability density function.
+
+These tests consider the matched-pair matrix which counts the number of times the classifiers both are wrong, the number of times they both are right, the number of times one is better than the other and vice versa.
+Intuitively, this takes into account that some classifications might be more difficult than others. 
+This is the motivation for the random baseline.
 \subsection{Test of experiment effect}
 
 -- Introduce ANOVA: Model assumptions
@@ -130,8 +137,13 @@ Yes, experiment is significant.\\
 -- Low residual variance when compared to within-group variance\\
 -- Model assumptions: Plot\\
 \begin{thebibliography}{9}
-	\bibitem{Tree} Ripley, Brian: "Package ‘tree’", 26/05-19. At: \url{https://cran.r-project.org/web/packages/tree/tree.pdf} (consulted 16/01-20)
-	\bibitem{Deviance} Ritschard, Gilbard: "Computing and using the deviance withclassification trees", 01-06. At:
+	\bibitem{Tue} Herlau, Tue et al. "Introduction to Machine Learning and Data Mining: Lecture notes, Fall 2019, version 1.4b" 13/12-19.
+	\bibitem{KNN} Ripley, Brian: "Package ’class’", 01/01-19 .\\
+	At:
+	\url{https://cran.r-project.org/web/packages/class/class.pdf} (consulted 16/01-20)
+	\bibitem{Tree} Ripley, Brian: "Package ‘tree’", 26/05-19.\\ At: \url{https://cran.r-project.org/web/packages/tree/tree.pdf} (consulted 16/01-20)
+	\bibitem{Deviance} Ritschard, Gilbard: "Computing and using the deviance with classification trees", 01-06.\\
+	 At:
 	\url{http://mephisto.unige.ch/pub/publications/gr/ritschard_compstat06.pdf} (consulted 16/01-20)
 \end{thebibliography}
 \appendix
