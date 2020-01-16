@@ -1,22 +1,29 @@
+#install.packages("PerformanceAnalytics")
+
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path));
 
 rm(list = ls());
+library("PerformanceAnalytics");
 load(file = "data/fosfor_data.Rdata");
-
 Phosphorous$location = as.factor(Phosphorous$location)
 Phosphorous
 summary(Phosphorous)
-plot(Phosphorous)
+
+chart.Correlation(within(Phosphorous, rm(location)), histogram = F, 
+                  method = "pearson",
+                  labels = c("yield", "neger", "grønlænder")
+)
+
 
 cor(Phosphorous$olsenP, Phosphorous$DGT) #0.8759104
 
 nl_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = Phosphorous,
-                  start = list(alfa = 90 , beta = 1))
+                  start = list(alfa = 80 , beta = 2))
 summary(nl_model_dgt)
 
 
 nl_model_oP <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = Phosphorous,
-                  start = list(alfa = 90 , beta = 1))
+                  start = list(alfa = 80 , beta = 2))
 summary(nl_model_oP)
 
 

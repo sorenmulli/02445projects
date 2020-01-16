@@ -67,10 +67,12 @@
 	\subfloat{
 		\includegraphics[width=.5\linewidth]{p1_3d_example1}
 	}
-	\subfloat{5
+	\subfloat{
 		\centering
 		\includegraphics[width=.5\linewidth]{p1_3d_example2}
 	}
+	\label{fig:trajects}
+	\caption{Movies}
 \end{figure}
 
 
@@ -78,8 +80,9 @@
 
 
 \subsection{Machine Learning Task: Classification}
--- High dimensional 10-class classification 
-\paragraph{Models}
+Two machine learning models were chosen to test on this 300-dimensional 10-class data.
+It is noted from initial plots -- fig. \ref{fig:trajects} and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear, such that models that can model nonlinear decision boundaries are considered.
+\paragraph{Models} The two chosen models were a binary classification tree and a 3-nearest neighbour classifier. The classification tree used the implementation of Hunt's algorithm of the \texttt{tree} package in \texttt{R} \cite{Tree}. For splitting criterion, the \textit{deviance} is used which is based on minus two times the log likelihood of the data under each model that the split results in \cite{Deviance}.
 ---Binary classification tree: Hunt's algorithm\\
 ---3NN: The K value was chosen before based on data dimensionality\\
 -- Baseline: 10\pro\\  
@@ -125,9 +128,13 @@ Yes, experiment is significant.\\
 -- Which coordinate it is explains the largest part of data variability but experiment no. comes in second\\
 -- Low residual variance when compared to within-group variance\\
 -- Model assumptions: Plot\\
-
+\begin{thebibliography}{9}
+	\bibitem{Tree} Ripley, Brian: "Package ‘tree’", 26/05-19. At: \url{https://cran.r-project.org/web/packages/tree/tree.pdf} (consulted 16/01-20)
+	\bibitem{Deviance} Ritschard, Gilbard: "Computing and using the deviance withclassification trees", 01-06. At:
+	\url{http://mephisto.unige.ch/pub/publications/gr/ritschard_compstat06.pdf} (consulted 16/01-20)
+\end{thebibliography}
 \appendix
-\section{hwo}
+\section{Appendix: Figures}
 \begin{figure}[H]
 	
 	\centering
@@ -138,7 +145,11 @@ Yes, experiment is significant.\\
 		\centering
 		\includegraphics[width=.5\linewidth]{p1_example2}
 	}
+	\caption{Floats}
+	\label{fig:2dtrajects}
 \end{figure}
+
+
 \end{document}
 
 
