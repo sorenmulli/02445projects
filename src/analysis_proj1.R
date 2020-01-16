@@ -174,16 +174,23 @@ mcnemar(tree.preds,baseline, df$person)
 #NEW DATA FRAME for ANOVA
 rm(list = ls());
 
+
+
 load(file = "data/armdata.RData");
 
-raw_movement <- unlist(armdata, recursive = T)
-coordinate <- rep( c(
-    rep("x", 100),
-    rep("y", 100),
-    rep("z", 100)
-    ),
-    1600
-) 
+coordinates <- rep(NA, 300);
+for (i in 1:300) {
+	if (i <= 100) {
+		coordinates[i] <- paste(c("x", as.character(i)), collapse = "");
+	} else if (i <= 200) {
+		coordinates[i] <- paste(c("y", as.character(i-100)), collapse = "");
+	} else {
+		coordinates[i] <- paste(c("z", as.character(i-200)), collapse = "");
+	}
+}
+
+raw_movement <- unlist(armdata, recursive = T);
+coordinate <- rep(coordinates, 1600);
 repetition <- c()
 person <- c()
 experiment <- c()
@@ -208,7 +215,7 @@ arm_dataframe <- data.frame(
 #Use last (control) experiment as reference
 levels(arm_dataframe$experiment) <-c(2:16, 1)
   
-model <- lm(pos ~ coordinate + repetition + person+ experiment)
+model <- lm(pos ~ coordinate + repetition + person + experiment)
 anova(model)
 summary(model)
 

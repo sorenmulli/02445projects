@@ -5,6 +5,7 @@
 \usepackage{SpeedyGonzales}
 \usepackage{MediocreMike}
 %\usepackage{Blastoise}
+\usepackage{listings}
 
 \usepackage{float}
 \usepackage[caption = false]{subfig}
@@ -61,7 +62,11 @@ The data had been preprocessed such that every curve was of the same length.\\
 \\
 For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
 For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
-The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
+The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.\\
+\\
+Later, we tested wether or not the experiment had a significant effect.
+For this, we ravelled the data points into a vector of length $ 480,000 $, which is explained in more details in section \ref{subsec:expeffect}.
+
 \begin{figure}[H]
 		
 	\centering
@@ -99,12 +104,17 @@ From this test, a \(p\)-value for the null hypothesis that the two classifiers h
 These tests consider the matched-pair matrix which counts the number of times the classifiers both are wrong, the number of times they both are right, the number of times one is better than the other and vice versa.
 Intuitively, this takes into account that some classifications might be more difficult than others. 
 This is the motivation for the random baseline.
-\subsection{Test of experiment effect}
-
--- Introduce ANOVA: Model assumptions
--- Introduce factors
-
-
+\subsection{Test of experiment effect}\label{subsec:expeffect}
+Analysis of Variance, or ANOVA, is a method for comparing the means of multiple groups.
+This makes it useful for detecting if there is a significant difference between the experiments.
+ANOVA works by testing the likelihood of a given mean's distance to the overall mean is due to random variation, which is done using variability decomposition.
+We assumed the null hypothesis $ H_0: \mu_1=\mu_2=\ldots=\mu_{16} $.\\
+\\
+In order to use ANOVA, all the 480,000 data points were ravelled into a vector of the same length.
+Four similar vectors where then created for the explanatory variables.
+The first contained the coordinates features, such as \texttt{z3} for the third $ z $-value.
+The second contained the person, the third the repetition, and the fourth the experiment number.
+We then used a linear model with R's \texttt{lm} function followed by \texttt{anova} to perform a four-way ANOVA (given the four explanatory variables).
 
 \section{Results}
 \begin{figure}[H]
