@@ -137,8 +137,10 @@ mcnemar <- function(preds1, preds2,  true){
   r <- n12 / (n12 + n21); r
   #Null hypothesis r = 0.5
   #Test in binomial distribution
-  print(n11, n12)
-  print(n21, n22)
+  print(n11)
+  print(n12)
+  print(n21)
+  print(n22)
   m <- min(c(n12,n21))
   prob <- 1/2
   N <- n12 + n21
@@ -147,7 +149,7 @@ mcnemar <- function(preds1, preds2,  true){
   
   
   
-  alpha <- 0.05
+  alpha <- 0.01
   theta.hat <- (n12-n21)/n; theta.hat
   Q <- (n^2 * (n+1)*(theta.hat +1)*(1-theta.hat))/(n*(n12+n21)-(n12-n21)^2)
   Beta.p <- (theta.hat+1)/2 * (Q-1)
