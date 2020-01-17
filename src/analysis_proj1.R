@@ -219,10 +219,13 @@ arm_dataframe <- data.frame(
 #Use last (control) experiment as reference
 levels(arm_dataframe$experiment) <-c(2:16, 1)
   
-model <- lm(pos ~ coordinate + repetition + person + experiment)
+model <- lm(pos ~ repetition + person + experiment + coordinate)
 anova(model)
 summary(model)
 
+qqnorm(model$residuals)
+qqline(model$residuals)
+hist(model$residuals, breaks = 100)
 
 plot1_dataframe <- subset(arm_dataframe, experiment == 4 & (person == 1))
 plot1_dataframe$x_coord <- plot1_dataframe$pos[plot1_dataframe$coordinate == "x"]
@@ -263,3 +266,5 @@ layout(
     zaxis = list(title = "Z")
   ))
 x
+
+
