@@ -178,8 +178,6 @@ mcnemar(tree.preds,baseline, df$person)
 #NEW DATA FRAME for ANOVA
 rm(list = ls());
 
-
-
 load(file = "data/armdata.RData");
 
 coordinates <- rep(NA, 300);
@@ -195,6 +193,12 @@ for (i in 1:300) {
 
 raw_movement <- unlist(armdata, recursive = T);
 coordinate <- rep(coordinates, 1600);
+# coordinate <- rep(c(
+#   rep("x", 100),
+#   rep("y", 100),
+#   rep("z", 100)),
+#   1600
+# )
 repetition <- c()
 person <- c()
 experiment <- c()
@@ -220,9 +224,12 @@ arm_dataframe <- data.frame(
 levels(arm_dataframe$experiment) <-c(2:16, 1)
   
 model <- lm(pos ~ coordinate + repetition + person + experiment)
-anova(model)
+Sanova(model)
 summary(model)
-
+par(mfrow = c(1, 2));
+hist(model$residuals);
+qqnorm(model$residuals);
+qqline(model$residuals);
 
 plot1_dataframe <- subset(arm_dataframe, experiment == 4 & (person == 1))
 plot1_dataframe$x_coord <- plot1_dataframe$pos[plot1_dataframe$coordinate == "x"]
