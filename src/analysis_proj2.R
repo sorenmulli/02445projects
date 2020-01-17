@@ -17,17 +17,31 @@ dgt_test_errors <- rep(NA, K)
 oP_test_errors <- rep(NA, K)
 for (k in 1:K) {
         i_P <- subset(Phosphorous, location != levels(Phosphorous$location)[k])
-        print(i_P)              
-        nl_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = i_P,
+        k_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = i_P,
                             start = list(alfa = 80 , beta = 2))
-        nl_model_oP <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = i_P,
+        k_model_oP <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = i_P,
                            start = list(alfa = 80 , beta = 2))
+        
+        dgt_test_errors[k] <- (summary(k_model_dgt)$sigma)^2
+        oP_test_errors[k] <- (summary(k_model_oP)$sigma)^2
 
 }
+mean(dgt_test_errors)
+mean(oP_test_errors)
+
+par(mfrow = c(1,2))
+qqnorm(dgt_test_errors)
+qqline(dgt_test_errors)
+
+qqnorm(oP_test_errors)
+qqline(oP_test_errors)
+
+
+t.test(dgt_test_errors, oP_test_errors, paired = T)
+
 nl_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = Phosphorous,
                   start = list(alfa = 80 , beta = 2))
 summary(nl_model_dgt)
-
 
 nl_model_oP <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = Phosphorous,
                   start = list(alfa = 80 , beta = 2))
