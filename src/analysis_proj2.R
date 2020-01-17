@@ -10,13 +10,20 @@ Phosphorous
 summary(Phosphorous)
 
 chart.Correlation(within(Phosphorous, rm(location)), histogram = F, 
-                  method = "pearson",
-                  labels = c("yield", "neger", "grønlænder")
-)
+                  method = "pearson")
 
+K <- length(levels(Phosphorous$location))
+dgt_test_errors <- rep(NA, K) 
+oP_test_errors <- rep(NA, K)
+for (k in 1:K) {
+        i_P <- subset(Phosphorous, location != levels(Phosphorous$location)[k])
+        print(i_P)              
+        nl_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = i_P,
+                            start = list(alfa = 80 , beta = 2))
+        nl_model_oP <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = i_P,
+                           start = list(alfa = 80 , beta = 2))
 
-cor(Phosphorous$olsenP, Phosphorous$DGT) #0.8759104
-
+}
 nl_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = Phosphorous,
                   start = list(alfa = 80 , beta = 2))
 summary(nl_model_dgt)
@@ -25,6 +32,9 @@ summary(nl_model_dgt)
 nl_model_oP <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = Phosphorous,
                   start = list(alfa = 80 , beta = 2))
 summary(nl_model_oP)
+
+
+
 
 
 simple_model_dgt <- lm(yield ~ DGT, data = Phosphorous)
