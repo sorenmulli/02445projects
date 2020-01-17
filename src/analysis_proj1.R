@@ -223,9 +223,9 @@ arm_dataframe <- data.frame(
 #Use last (control) experiment as reference
 levels(arm_dataframe$experiment) <-c(2:16, 1)
   
-model <- lm(pos ~ coordinate + repetition + person + experiment)
-Sanova(model)
-summary(model)
+model <- lm(pos ~ coordinate + repetition + person + experiment);
+anova(model);
+summary(model);
 par(mfrow = c(1, 2));
 hist(model$residuals);
 qqnorm(model$residuals);

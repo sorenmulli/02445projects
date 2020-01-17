@@ -1,5 +1,5 @@
 % !TeX spellcheck = en_GB
-\documentclass[12pt,fleqn]{article}
+\documentclass[11pt,fleqn]{article}
 
 \usepackage[english]{babel}
 \usepackage{SpeedyGonzales}
@@ -40,35 +40,31 @@
 \maketitle
 %\thispagestyle{fancy}
 %\tableofcontents
---Identifying people from movement curve\\
---Are arm movements of different objects significantly different\\
---Trains, evaluates binary classification tree and 3-nearest neighbour classification to identify people. McNemars test: Find that 3-nearest neighbours is significantly than class. tree and that both are significantly better than baseline.\\
---Using four-way ANOVA, it is found that there is significant difference in arm movements for different experiments.
 \tableofcontents
 \newpage 
 
 
 \section{Introduction}
-
--- Briefly introduce the background \& setting of the problem, as well as the aim of the report. Furthermore, you could give a very short description of the analysis that will be applied.
-
+This report is based on a dataset consisting of positions of 10 people's hands as they move cylinders of different sizes and weights over obstacles.
+There are two goals with this report: One is trying to detect the person doing the movement using classification trees and the K Nearest Neighbours algorithm, and the second aims to test wether or not changing the shapes and weights of the cylinders has a statistically significant impact on the movements.
+This will be done using the analysis of variance test, or ANOVA.
 
 \section{Data}
 The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
 The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
 Thus, the data was structured in a $ 16\times 10\times 10 $ grid, where the first axis is the experiment, the second the person, and the third the repetition.
 For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
-The data had been preprocessed such that every curve was of the same length.\\
+The data had been preprocessed such that every curve was of the same length.
+Some of the movements are plotted in figure \ref{fig:trajects}.\\
 \\
 For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
 For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
-The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.\\
-\\
+The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
+
 Later, we tested wether or not the experiment had a significant effect.
 For this, we ravelled the data points into a vector of length $ 480,000 $, which is explained in more details in section \ref{subsec:expeffect}.
 
 \begin{figure}[H]
-		
 	\centering
 	\subfloat{
 		\includegraphics[width=.5\linewidth]{p1_3d_example1}
@@ -78,7 +74,7 @@ For this, we ravelled the data points into a vector of length $ 480,000 $, which
 		\includegraphics[width=.5\linewidth]{p1_3d_example2}
 	}
 	\label{fig:trajects}
-	\caption{Movies}
+	\caption{Hand movements of two different people in the fourth experiment.}
 \end{figure}
 
 
@@ -108,13 +104,21 @@ This is the motivation for the random baseline. It is noted that these parametri
 Analysis of Variance, or ANOVA, is a method for comparing the means of multiple groups.
 This makes it useful for detecting if there is a significant difference between the experiments.
 ANOVA works by testing the likelihood of a given mean's distance to the overall mean is due to random variation, which is done using variability decomposition.
-We assumed the null hypothesis $ H_0: \mu_1=\mu_2=\ldots=\mu_{16} $.\\
-\\
+We assumed the null hypothesis $ H_0: \mu_1=\mu_2=\ldots=\mu_{16} $.
+
 In order to use ANOVA, all the 480,000 data points were ravelled into a vector of the same length.
 Four similar vectors where then created for the explanatory variables.
 The first contained the coordinates features, such as \texttt{z3} for the third $ z $-value.
 The second contained the person, the third the repetition, and the fourth the experiment number.
 We then used a linear model with R's \texttt{lm} function followed by \texttt{anova} to perform a four-way ANOVA (given the four explanatory factors).
+
+One major assumption of ANOVA is that the residuals are normally distributed.
+As figure \ref{fig:qq} shows, this is somewhat true, but with many exceptions, so the results should be taken with a grain of salt.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{qq}
+	\caption{Histogram and QQ-plot of the residuals of a linear model.}\label{fig:qq}
+\end{figure}
 
 \section{Results}
 
@@ -123,7 +127,7 @@ We then used a linear model with R's \texttt{lm} function followed by \texttt{an
 \paragraph{Point estimates for accuracy}
 
 \begin{align*}
-	& \hat \theta_{Base.}= 12\pro 
+	& \hat \theta_{Base}= 12\pro 
 	&& \hat \theta_{Tree} =41\pro 
 	&&&\hat \theta_{3NN} = 60 \pro 
 \end{align*}
@@ -176,34 +180,45 @@ Estimate for accuracy difference and 99\pro\ confidence interval and \(p\)-value
 \[
 \widehat{\Delta \theta} = 29\pro,\quad  \Delta \theta\in[14\pro , 43\pro], \quad p = 3.8\ctp{-5}
 \]
-\begin{figure}[H]
-\centering
-\includegraphics[width=.7\linewidth]{p1_anova}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\linewidth]{p1_anova_summay}
-\end{figure}
 
+\paragraph{Impact of experiment}
+All experiments are seen to be significant at a significance level of $ \alpha=0.1\pro $.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lrrrrr}
-		          &     Df&    Sum Sq& Mean Sq&   F value&    Pr($ < $F)    \\
+		          &     Df&    Sum Sq& Mean Sq&   $ F $ value&    Pr($ < $F)    \\
 		coordinate&    299& 230298000&  770227& 61477.804&  $ < $2.2e-16 ***\\
 		repetition&      9&     10036&    1115&    89.007&  $ < $2.2e-16 ***\\
 		person    &      9&    124551&   13839&  1104.595&  $ < $2.2e-16 ***\\
 		experiment&     15&    433652&   28910&  2307.543&  $ < $2.2e-16 ***\\
 		Residuals & 479631&   6009079&      13& &
 	\end{tabular}
-	\caption{R output from ANOVA. Three asterisks mean significance at a significance level of $ \alpha=0.1\pro $.}
+	\caption{R output from ANOVA. Three asterisks mean significance at a significance level of $ \alpha=0.1\pro $.}\label{tab:ranova}
 \end{table}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lrrrr}
+		&Estimate &Std. Error &$ t $ value &Pr($ >|t| $)\\
+		(Intercept)&    -1.158886&   0.093391& -12.409&  $ < $ 2e-16 ***\\
+		experiment2&     0.361933&   0.028900&  12.523&  $ < $ 2e-16 ***\\
+		experiment3&     1.122695&   0.028900&  38.847&  $ < $ 2e-16 ***\\
+		experiment4&     0.252041&   0.028900&   8.721&  $ < $ 2e-16 ***\\
+		experiment5&     0.710498&   0.028901&  24.584&  $ < $ 2e-16 ***\\
+		experiment6&     1.442134&   0.028900&  49.900&  $ < $ 2e-16 ***\\
+		experiment7&     0.488445&   0.028901&  16.901&  $ < $ 2e-16 ***\\
+		experiment8&     1.161682&   0.028900&  40.196&  $ < $ 2e-16 ***\\
+		experiment9&     1.843712&   0.028900&  63.795&  $ < $ 2e-16 ***\\
+		experiment10&    0.703864&   0.028902&  24.354&  $ < $ 2e-16 ***\\
+		experiment11&    1.592115&   0.028902&  55.087&  $ < $ 2e-16 ***\\
+		experiment12&    2.500064&   0.028900&  39.275&  $ < $ 2e-16 ***\\
+		experiment14&    2.103468&   0.028902&  72.780&  $ < $ 2e-16 ***\\
+		experiment15&    3.219295&   0.028900& 111.393&  $ < $ 2e-16 ***\\
+		experiment16&   -0.612838&   0.028900& -21.205&  $ < $ 2e-16 ***
+	\end{tabular}
+	\caption{R output from the summary of the linear model concerning the impacts of the experiments.}
+\end{table}\noindent
 
-
-Yes, experiment is significant.\\
-	
--- All experiments are (at 1\pro) significantly different from the control experiment which has been set to reference
-
-\section{Discussion}
+\section{Discussion and Conclusion}
 \subsection{Classification of persons}
 %The initial visualizations of the data in the 3D and 2D scatter plots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction.  
 It is seen that the expectation of some accuracy was confirmed: The 3-nearest neighbour model is the best at 60\pro\ and is significantly better than the classification tree and they are both significantly better than the random guesses. The greater aim of reliably discerning people based on movement is far from achieved at an performance of 60\pro. However, this significant result with these un-optimized models shows a promise for the machine learning task as there is a number of possible improvements. 
@@ -213,11 +228,13 @@ It is seen that the expectation of some accuracy was confirmed: The 3-nearest ne
 The models were not tested for complexity controlling hyper parameters such as \(K\) for the KNN or the impurity function for the tree model and possible improvements could be found here. A larger improvement could be found in much more complex models for this high-dimensional data set such as random forests or deep neural networks. More generalizable performance could also be found by using the entire data set, not just experiment 4, to find more general personal  features and mannerisms.
 
 \subsection{Test of difference in experiments}
--- Expectation: Yes, significant difference as 15 different obtacle avoidance tests + control is considered\\
--- Surprise: Repetition is also significant though\\
--- Which coordinate it is explains the largest part of data variability but experiment no. comes in second\\
--- Low residual variance when compared to within-group variance\\
--- Model assumptions: Plot\\
+We found that the experiment had a statistically significant impact on the hand movements of the test subjects with $ p<2.2\ctp{-16} $.
+This was also the case for every individual experiment.
+However, the assumptions of the ANOVA test utilized were not fully realized (see figure \ref{fig:qq}), which is likely to have had at least some impact on the test.
+Combined with the 480,000 data points, this could help explain the exceptionally low $ p $ values.
+The unfulfilled assumptions could also help explain one of the more surprising results of the experiments: That the repetition also had a $ p $ value of less than $ 2.2\ctp{-16} $.
+As seen on table \ref{tab:ranova}, most of the variance was explained by the coordinate variable, which is not surprising.
+
 \begin{thebibliography}{9}
 	\bibitem{Tue} Herlau, Tue et al. "Introduction to Machine Learning and Data Mining: Lecture notes, Fall 2019, version 1.4b" 13/12-19.
 	\bibitem{KNN} Ripley, Brian: "Package ’class’", 01/01-19 .\\
