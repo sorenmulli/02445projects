@@ -224,6 +224,7 @@ arm_dataframe <- data.frame(
 levels(arm_dataframe$experiment) <-c(2:16, 1)
   
 model <- lm(pos ~ coordinate + repetition + person + experiment);
+options(max.print = 10000);
 anova(model);
 summary(model);
 par(mfrow = c(1, 2));
