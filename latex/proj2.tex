@@ -59,6 +59,7 @@ The fields are from Denmark and Norway and the multiple measurements of yield fr
 	\centering
 	\includegraphics[width=.7\linewidth]{p2_fieldbox}
 	\caption{Boxplot of the barley output measurements for the plots in each field. Note the much larger between-field variance than within-field variance which shows that the multiple observations on the same field cannot be considered independent.}
+	\label{fig:fieldbox}
 \end{figure}
 \section{Methods and analysis}
 \subsection{Recommended measure}
@@ -118,7 +119,7 @@ The paired \(t\)-test comparison of the nine cross validation test errors for th
 %	\includegraphics[width=.7\linewidth]{simpleOP}
 %\end{figure}
 \noindent
-The results of the ANCOVA and F-test:  
+The results of the ANCOVA and corresponding \(F\)-test:  
 \begin{table}[H]
 	\centering
 	\begin{tabular}{c |  c c c}
@@ -134,10 +135,46 @@ The results of the ANCOVA and F-test:
 	Olsen P & 982 & 106 & \(2 \ctp{-10}\)\\
 	Residuals & 9.23
 	\end{tabular}
-\end{table}
-
-
+\end{table}\noindent 
+The slopes for the ANCOVA models and their std. errors are estimated to:
+\begin{align*}
+	&\hat \beta_{dgt}= 1.7,\ \ \hat \sigma_{\beta_{dgt}}=0.090
+	&&\hat \beta_{olsenP}= 25,\ \ \hat \sigma_{\beta_{dgt}}=1.3
+\end{align*}
 \section{Discussion}
+\paragraph{Validity of statistical analyses} The assumptions of \(t\)-test of independence and normality are considered as partly satisfied as the experiment setup is assumed to supply independence between the fields but the normality of the paired test is somewhat more doubtful with the outliers in the below quantile/quantile-plot:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\linewidth]{p2_t_qq}
+	\label{fig:tqq}
+	\caption{Quantiles/quantile plot of the differences in \(MSE\) used to check for normality of the the paired t-test. Two left-skewing outliers problematize the normal assumption.}
+\end{figure} \noindent 
+For the ANCOVA, the assumption of linears effects is doubtful as the Michaelis-Menten nonlinear model fits better to the data than linear models. The assumption of variance homogeneity can neither be confirmed with some of the fields having lower variance though this beyond conclusion with just 2-4 data points for each field. The normality assumption seems reasonable based on below plots bar some askewness.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{p2_ancova_qq}
+	\label{fig:tqq}
+	\caption{Quantiles/quantile plot of ANCOVA residuals and boxplot of field group residuals. Note that these plots are the same for both ANCOVA models as the only one DGT and one Olsen P measurement has been made for each field.}
+\end{figure} \noindent 
+\paragraph{Statistical conclusions} The estimates of the generalization errors of the Michaelis-Menten models implied a clear edge of the DGT measurement in terms of explanatory power. 
+However, due to the \(t\)-test returning giving \(p=0.21\) and not being completely validated, the statistical evidence for this edge to be significant is minor or non-existant. This could be further tested with a non-parametric rank-sum test but it is suspected that no significant evidence can be found of this difference without more data.
+
+The ANCOVA proves more convincingly the simple fact that both measurements have significant effects on the barley yield with very low \(p\)-values. 
+Though they cannot be interpreted directly as risk of type I-errors due to limited fulfilment of assumptions, the \(p\)-values are seen as high degree of evidence for the effect of the bioavailable phosphorous.
+
+\paragraph{Recommendations} The first, clear recommendation is that no matter what measurement technique the farmers use, the amount of bioavailable phosphorous is linked to yield of barley. 
+This is supported by the ANCOVA conclusions, the correlations of 0.36 and 0.46 and the Michaelis-Menten models' explanatory power which is considered as an approximation of the true enzymological, generative story \cite{michment}. 
+This of course, does not prove that the bioavailable phoshorous \textit{causes} the higher yield, though this is suspected due to the role of phosphorous in nutrients and the Michaelis-Menten model is recommended as a possible model for this effect which can help farmers plan the crop rotation and choice of farming land.
+
+It was ultimately not proven that the newer DGT measurement predicts the yield better than the cheaper Olsen P-measurement but a number of indicia were found which give some evidence for this: The DGT measurement had the highest correlation with the yield, the DGT Michaelis-Menten model fitted better to the data and the DGT measurement explained a higher amount of the variance in the ANCOVA models than the Olsen-P measurement did.
+Based on this, collection of more data is suggested and it is recommended for farmers to use the DGT measurement if the economic loss of this is minor. 
+
+On the other hand, the correlation between the measurement techniques was found to be 88\pro\ so a major investment in the new technique cannot be justified based on this evidence. 
+An important factor in the hinted, higher predictive power of the DGT measurement was field 11 which had the lowest yield and can be seen as the outlier in the figures \ref{fig:fieldbox}, \ref{fig:tqq} and in figure \ref{fig:yield_bio} it is clear that the model based on DGT-measurements explains this field (points in light grey) much better. 
+If the data corresponds well to the general field distribution and the Michealis-Menten model is a good approximation of the generative story, a heuristic can be formed that the DGT-technique should be used on low-yield fields. 
+On the other hand, if field 11 is seen as an outlier which should be excluded from the models (an idea somewhat supported by the two NA's in the four yield measurements from field 11), then the evidence for the advantage of DGT shrinks considerably.
+
+
 \begin{thebibliography}{9}
 	\bibitem{michment}Dragan, J., Kristian, S., Scitovski, R.: "Total least squares fitting Michaelis–Menten enzyme kinetic model function", 04-07, Journal of Computational and Applied Mathematics, 201:1. 
 
