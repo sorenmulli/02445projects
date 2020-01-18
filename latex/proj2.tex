@@ -5,7 +5,8 @@
 \usepackage{SpeedyGonzales}
 \usepackage{MediocreMike}
 %\usepackage{Blastoise}
-
+\usepackage{float}
+\usepackage[caption = false]{subfig}
 \title{}
 \author{Asger Schultz}
 \date{\today}
@@ -75,28 +76,36 @@ From this, estimates of the two model's generalization errors as the mean square
 \subsection{Yield influence of bioavailable phosphorous}
 To test whether there is a significant effect of bioavailable phosphorous on the barley yield, ANCOVA models of the following form is evaluated:
 \[
-y = \alpha_{field, i} + \beta x
+y_i = \alpha_{field(y_i)} + \beta x_i + \epsilon_i, \quad \epsilon_i \sim \mathcal N (0, \sigma^2)
 \]
-where \(y\) is the barley yield and two models are evalued with \(x\) being the DGT and the Olsen-P measurements respectively. Interaction effects are not included due to the missing data in one of the fields such that only one slope is evaluated for each model. The significance of this slope is then evaluated using the ANCOVA F-test for each model.
+where \(y\) is the barley yield and two models are evalued with \(x\) being the DGT and the Olsen-P measurements respectively. Interaction effects are not included due to the missing data in one of the fields such that only one slope is evaluated for each model. The significance of this slope -- and thus the linear effect of bioavailable phosphorous -- is then evaluated using the ANCOVA F-test for each model.
 \section{Results}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.9\linewidth]{p2_corrplot}
-	\caption{Visualization of a Correlation Matrix. On top the (absolute) value of the correlation plus the result of the cor.test as stars. On bottom, the bivariate scatterplots, with a fitted line}
+	\includegraphics[width=.75\linewidth]{p2_corrplot}
+	\caption{Scatter plots with rolling averages and correlations between the three continous variables. Asterisks are loose indications\protect\footnotemark\ of amount of evidence for the hypothesis that the correlation \(\neq 0\).}
 \end{figure}
+\footnotetext{They are computed with \texttt{corr.test} but the assumptions for these to count as \(p\)-values (where one asterisk corresponds to \(\alpha = 0.05\) and so forth) are not fulfilled as the data points are not independent}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.8\linewidth]{dgt_mmm}
+\subfloat{
+	\includegraphics[width=.5\linewidth]{dgt_mmm}
+}
+\subfloat{
+	\includegraphics[width=.5\linewidth]{oP_mm}
+}	
+	\label{fig:yield_bio}
+\caption{Michaelis-Menten models with visualizations of the nine cross validation folds.}
 \end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.8\linewidth]{oP_mm}
-\end{figure}
-
+The estimated generalization errors from the nine-fold cross validation over the fields:
 \begin{align*}
-	& \sqrt{MSE_{dgt}}	 = 10.84
-	&& \sqrt{MSE_{olsenP}} = 14.65
+	& \widehat {MSE}_{gen} ^{dgt} = 181
+	&& \widehat {MSE}_{gen} ^{olsenP} = 445
 \end{align*}
+The paired \(t\)-test comparison of the nine cross validation test errors for the two models including 95\pro\ confidence interval and \(p\) value for \(H_0: {MSE}_{gen} ^{dgt}={MSE}_{gen} ^{olsenP}\):
+\[
+\widehat{\Delta MSE}_{gen} = -264, \quad \Delta MSE\in [-713, 185],\quad  p=0.21
+\]
 %\begin{figure}[H]
 %	\centering
 %	\includegraphics[width=.7\linewidth]{simpleDGT}
@@ -108,14 +117,25 @@ where \(y\) is the barley yield and two models are evalued with \(x\) being the 
 %	\centering
 %	\includegraphics[width=.7\linewidth]{simpleOP}
 %\end{figure}
-\begin{figure}[H]
+\noindent
+The results of the ANCOVA and F-test:  
+\begin{table}[H]
 	\centering
-	\includegraphics[width=.7\linewidth]{anovaDGT}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\linewidth]{anovaOP}
-\end{figure}
+	\begin{tabular}{c |  c c c}
+	\textbf{DGT-model}  & MSE&\(F\)-value&\(p\)-value\\
+	\hline 
+	Location  & 826 & 90 & \(4\ctp{-16}\)\\
+	DGT  & 1735 &  188 & \(4\ctp{-13}\)\\
+	Residuals & 9.23 &\\
+	\hline 
+	\textbf{Olsen P-model}  & MSE&\(F\)-value&\(p\)-value\\
+	\hline 
+	Location &933 & 101 & \(<2\ctp{-16}\)\\
+	Olsen P & 982 & 106 & \(2 \ctp{-10}\)\\
+	Residuals & 9.23
+	\end{tabular}
+\end{table}
+
 
 \section{Discussion}
 \begin{thebibliography}{9}
