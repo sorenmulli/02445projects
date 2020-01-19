@@ -45,25 +45,20 @@
 
 
 \section{Introduction}
-This report is based on a dataset consisting of positions of 10 people's hands as they move cylinders of different sizes and weights over obstacles.
-There are two goals with this report: One is trying to detect the person doing the movement using classification trees and the K Nearest Neighbours algorithm, and the second aims to test wether or not changing the shapes and weights of the cylinders has a statistically significant impact on the movements.
-This will be done using the analysis of variance test, or ANOVA.
+The field of artificial intelligence and machine learning is known for recognising patterns in high-dimensional data. 
+One application of such modelling is in human identification as facial recognition and biometric scanning are becoming a large part of our every day for better and for worse. One, more subtle identifier is our bodily movement which can be imagined to vary between people.
+
+It is thus an obvious question whether the difference in movement between people is enough to identify them. Achieving accurate modelling and a good understanding of such motor data might help fields such kinesiology and biomechanics and be applied in health and sport \cite{kine}.
+
+Two simple machine learning models, a classification tree and a 3-nearest neighbour classifier, are tested on this human classification task in a single arm movement experiment where subects moved cylinders of different sizes and weights over obstacles. Furthermore, a statistical test is performed on 16 arm movement experiments to test whether the type of task was signficantly different.
 
 \section{Data}
 The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
 The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
-Thus, the data was structured in a $ 16\times 10\times 10 $ grid, where the first axis is the experiment, the second the person, and the third the repetition.
+Thus, the data was structured in a $ 16\times 10\times 10 $ array, with axes: experiment\(\times\)person\(\times\)repetition.
 For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
 The data had been preprocessed such that every curve was of the same length.
-Some of the movements are plotted in figure \ref{fig:trajects}.\\
-\\
-For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
-For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
-The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
-
-Later, we tested wether or not the experiment had a significant effect.
-For this, we ravelled the data points into a vector of length $ 480,000 $, which is explained in more details in section \ref{subsec:expeffect}.
-
+Some of the movements are plotted in figure \ref{fig:trajects}.
 \begin{figure}[H]
 	\centering
 	\subfloat{
@@ -76,6 +71,14 @@ For this, we ravelled the data points into a vector of length $ 480,000 $, which
 	\label{fig:trajects}
 	\caption{Hand movements of two different people in the fourth experiment.}
 \end{figure}
+
+\noindent 
+For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
+For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
+The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
+
+Later, we tested wether or not the experiment had a significant effect.
+For this, we ravelled the data points into a vector of length $ 480,000 $, which is explained in more details in section \ref{subsec:expeffect}.
 
 
 \section{Methods and analysis}
@@ -237,13 +240,19 @@ As seen on table \ref{tab:ranova}, most of the variance was explained by the coo
 
 \begin{thebibliography}{9}
 	\bibitem{Tue} Herlau, Tue et al. "Introduction to Machine Learning and Data Mining: Lecture notes, Fall 2019, version 1.4b" 13/12-19.
+		\bibitem{kine} The University of British Columbia: School of Kinesiology:
+	"Neuromechanical Studies in Kinesiology". \\
+	At:
+	\url{https://kin.educ.ubc.ca/research/neuro-mechanical/} (consulted 19/01-20)
 	\bibitem{KNN} Ripley, Brian: "Package ’class’", 01/01-19 .\\
 	At:
+	
 	\url{https://cran.r-project.org/web/packages/class/class.pdf} (consulted 16/01-20)
 	\bibitem{Tree} Ripley, Brian: "Package ‘tree’", 26/05-19.\\ At: \url{https://cran.r-project.org/web/packages/tree/tree.pdf} (consulted 16/01-20)
 	\bibitem{Deviance} Ritschard, Gilbard: "Computing and using the deviance with classification trees", 01-06.\\
 	 At:
 	\url{http://mephisto.unige.ch/pub/publications/gr/ritschard_compstat06.pdf} (consulted 16/01-20)
+
 \end{thebibliography}
 \appendix
 \section{Figures}
