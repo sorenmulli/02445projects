@@ -27,6 +27,7 @@ oP_test_errors <- rep(NA, K)
 
 #dgt_models <-rep(NA, K) 
 #oP_models <- rep(NA, K)
+# Leave-one-out cross-validation
 for (k in 1:K) {
         i_P <- subset(Phosphorous, location != levels(Phosphorous$location)[k])
         k_model_dgt <- nls(yield ~ alfa * DGT/(beta + DGT) , data = i_P,
@@ -91,7 +92,7 @@ qqline(model_oP$residuals)
 par(mfrow = c(1,1))
 
 plot(Phosphorous$DGT, Phosphorous$yield,
-     xlab = "DGT-measured bioavailable phosporous [µg/L]",
+     xlab = "DGT-measured bioavailable phosporous [??g/L]",
      ylab = "Harvest yield of barley [hkg/ha]",
      main = "Yield influence of bioavailable phosporous, measured using DGT ",
      cex = 1, col = Phosphorous$location
