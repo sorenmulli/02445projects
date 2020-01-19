@@ -45,25 +45,20 @@
 
 
 \section{Introduction}
-This report is based on a dataset consisting of positions of 10 people's hands as they move cylinders of different sizes and weights over obstacles.
-There are two goals with this report: One is trying to detect the person doing the movement using classification trees and the K Nearest Neighbours algorithm, and the second aims to test wether or not changing the shapes and weights of the cylinders has a statistically significant impact on the movements.
-This will be done using the analysis of variance test, or ANOVA.
+The field of artificial intelligence and machine learning is known for recognising patterns in high-dimensional data. 
+One application of such modelling is in human identification as facial recognition and biometric scanning are becoming a large part of our every day for better and for worse. One, more subtle identifier is our bodily movement which can be imagined to vary between people.
+
+It is thus an obvious question whether the difference in movement between people is enough to identify them. Achieving accurate modelling and a good understanding of such motor data might help fields such kinesiology and biomechanics and be applied in health and sport \cite{kine}.
+
+Two simple machine learning models, a classification tree and a 3-nearest neighbour classifier, are tested on this human classification task in a single arm movement experiment where subects moved cylinders of different sizes and weights over obstacles. Furthermore, a statistical test is performed on 16 arm movement experiments to test whether the type of task was signficantly different.
 
 \section{Data}
 The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
 The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
-Thus, the data was structured in a $ 16\times 10\times 10 $ grid, where the first axis is the experiment, the second the person, and the third the repetition.
+Thus, the data was structured in a $ 16\times 10\times 10 $ array, with axes: experiment\(\times\)person\(\times\)repetition.
 For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
 The data had been preprocessed such that every curve was of the same length.
-Some of the movements are plotted in figure \ref{fig:trajects}.\\
-\\
-For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
-For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
-The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
-
-Later, we tested wether or not the experiment had a significant effect.
-For this, we ravelled the data points into a vector of length $ 480,000 $, which is explained in more details in section \ref{subsec:expeffect}.
-
+Some of the movements are plotted in figure \ref{fig:trajects}.
 \begin{figure}[H]
 	\centering
 	\subfloat{
@@ -76,6 +71,14 @@ For this, we ravelled the data points into a vector of length $ 480,000 $, which
 	\label{fig:trajects}
 	\caption{Hand movements of two different people in the fourth experiment.}
 \end{figure}
+
+\noindent 
+For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
+For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
+The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
+
+Later, we tested wether or not the experiment had a significant effect.
+For this, we ravelled the data points into a vector of length $ 480,000 $, which is explained in more details in section \ref{subsec:expeffect}.
 
 
 \section{Methods and analysis}
@@ -99,7 +102,7 @@ From this test, a \(p\)-value for the null hypothesis that the two classifiers h
 
 These tests consider the matched-pair matrix which counts the number of times the classifiers both are wrong, the number of times they both are right, the number of times one is better than the other (\(n_{12}\)) and vice versa (\(n_{21}\)).
 Intuitively, this takes into account that some classifications might be more difficult than others. 
-This is the motivation for the random baseline. It is noted that these parametric comparisons are approximations and \cite{Tue} states that the \(p\)-values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\).
+This is the motivation for the random baseline.
 \subsection{Test of experiment effect}\label{subsec:expeffect}
 Analysis of Variance, or ANOVA, is a method for comparing the means of multiple groups.
 This makes it useful for detecting if there is a significant difference between the experiments.
@@ -112,13 +115,7 @@ The first contained the coordinates features, such as \texttt{z3} for the third 
 The second contained the person, the third the repetition, and the fourth the experiment number.
 We then used a linear model with R's \texttt{lm} function followed by \texttt{anova} to perform a four-way ANOVA (given the four explanatory factors).
 
-One major assumption of ANOVA is that the residuals are normally distributed.
-As figure \ref{fig:qq} shows, this is somewhat true, but with many exceptions, so the results should be taken with a grain of salt.
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.5\textwidth]{qq}
-	\caption{Histogram and QQ-plot of the residuals of a linear model.}\label{fig:qq}
-\end{figure}
+
 
 \section{Results}
 
@@ -219,6 +216,15 @@ All experiments are seen to be significant at a significance level of $ \alpha=0
 \end{table}\noindent
 
 \section{Discussion and Conclusion}
+\paragraph{Validity of statistical analyses} The parametric McNemar test is re noted to approximation fromasymptotic theory and \cite{Tue} states that the \(p\)-values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\). This is seen to hold for all the matrices (the sums being 31, 58 and 49 for the comparisons) such that the results of the McNemar comparisons are seen as accurate.
+
+One major assumption of ANOVA is that the residuals are normally distributed.
+As figure \ref{fig:qq} shows, this is somewhat true, but with many exceptions, so the results should be taken with a grain of salt.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{qq}
+	\caption{Histogram and QQ-plot of the residuals of a linear model.}\label{fig:qq}
+\end{figure}
 \subsection{Classification of persons}
 %The initial visualizations of the data in the 3D and 2D scatter plots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction.  
 It is seen that the expectation of some accuracy was confirmed: The 3-nearest neighbour model is the best at 60\pro\ and is significantly better than the classification tree and they are both significantly better than the random guesses. The greater aim of reliably discerning people based on movement is far from achieved at an performance of 60\pro. However, this significant result with these un-optimized models shows a promise for the machine learning task as there is a number of possible improvements. 
@@ -237,6 +243,10 @@ As seen on table \ref{tab:ranova}, most of the variance was explained by the coo
 
 \begin{thebibliography}{9}
 	\bibitem{Tue} Herlau, Tue et al. "Introduction to Machine Learning and Data Mining: Lecture notes, Fall 2019, version 1.4b" 13/12-19.
+		\bibitem{kine} The University of British Columbia: School of Kinesiology:
+	"Neuromechanical Studies in Kinesiology". \\
+	At:
+	\url{https://kin.educ.ubc.ca/research/neuro-mechanical/} (consulted 19/01-20)
 	\bibitem{KNN} Ripley, Brian: "Package ’class’", 01/01-19 .\\
 	At:
 	\url{https://cran.r-project.org/web/packages/class/class.pdf} (consulted 16/01-20)
@@ -244,6 +254,7 @@ As seen on table \ref{tab:ranova}, most of the variance was explained by the coo
 	\bibitem{Deviance} Ritschard, Gilbard: "Computing and using the deviance with classification trees", 01-06.\\
 	 At:
 	\url{http://mephisto.unige.ch/pub/publications/gr/ritschard_compstat06.pdf} (consulted 16/01-20)
+
 \end{thebibliography}
 \appendix
 \section{Figures}
