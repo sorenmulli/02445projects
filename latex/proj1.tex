@@ -178,52 +178,62 @@ Estimate for accuracy difference, 99\pro\ confidence interval and \(p\)-value fo
 \widehat{\Delta \theta} = 29\pro,\quad  \Delta \theta\in[14\pro , 43\pro], \quad p = 3.8\ctp{-5}
 \]
 
-\paragraph{Impact of experiment}
-All experiments are seen to be significant at a significance level of $ \alpha=0.1\pro $.
+\paragraph{Impact of experiment} The results of the four way analysis of variance are given in the following table:
+
 \begin{table}[H]
 	\centering
-	\begin{tabular}{lrrrrr}
-		          &     Df&    Sum Sq& Mean Sq&   $ F $ value&    Pr($ < $F)    \\
-		coordinate&    299& 230298000&  770227& 61477.804&  $ < $2.2e-16 ***\\
-		repetition&      9&     10036&    1115&    89.007&  $ < $2.2e-16 ***\\
-		person    &      9&    124551&   13839&  1104.595&  $ < $2.2e-16 ***\\
-		experiment&     15&    433652&   28910&  2307.543&  $ < $2.2e-16 ***\\
-		Residuals & 479631&   6009079&      13& &
+	\begin{tabular}{l | c c c c}
+		ANOVA table & Degrees of fredeom& MSE&\(F\)-value&\(p\)-value\\
+		\hline 
+		Coordinate  & 299 & 770,227 & 		61,478 	& \(<2.2\ctp{-16}\)	\\
+		Repetition  & 9 &  1,115 & 			89	 	&\(<2.2\ctp{-16}\)  \\
+		Person  & 9 & 13,839 &	 			1,105 	&\(<2.2\ctp{-16}\)	\\
+		\textbf{Experiment}  & 15 &  28,910 & 2,308 & \(<2.2\ctp{-16}\)	\\
+		Residuals &479,631 & 13 &			
 	\end{tabular}
-	\caption{R output from ANOVA. Three asterisks mean significance at a significance level of $ \alpha=0.1\pro $.}\label{tab:ranova}
-\end{table}
-\begin{table}[H]
-	\centering
-	\begin{tabular}{lrrrr}
-		&Estimate &Std. Error &$ t $ value &Pr($ >|t| $)\\
-		(Intercept)&    -1.158886&   0.093391& -12.409&  $ < $ 2e-16 ***\\
-		experiment2&     0.361933&   0.028900&  12.523&  $ < $ 2e-16 ***\\
-		experiment3&     1.122695&   0.028900&  38.847&  $ < $ 2e-16 ***\\
-		experiment4&     0.252041&   0.028900&   8.721&  $ < $ 2e-16 ***\\
-		experiment5&     0.710498&   0.028901&  24.584&  $ < $ 2e-16 ***\\
-		experiment6&     1.442134&   0.028900&  49.900&  $ < $ 2e-16 ***\\
-		experiment7&     0.488445&   0.028901&  16.901&  $ < $ 2e-16 ***\\
-		experiment8&     1.161682&   0.028900&  40.196&  $ < $ 2e-16 ***\\
-		experiment9&     1.843712&   0.028900&  63.795&  $ < $ 2e-16 ***\\
-		experiment10&    0.703864&   0.028902&  24.354&  $ < $ 2e-16 ***\\
-		experiment11&    1.592115&   0.028902&  55.087&  $ < $ 2e-16 ***\\
-		experiment12&    2.500064&   0.028900&  39.275&  $ < $ 2e-16 ***\\
-		experiment14&    2.103468&   0.028902&  72.780&  $ < $ 2e-16 ***\\
-		experiment15&    3.219295&   0.028900& 111.393&  $ < $ 2e-16 ***\\
-		experiment16&   -0.612838&   0.028900& -21.205&  $ < $ 2e-16 ***
-	\end{tabular}
-	\caption{R output from the summary of the linear model concerning the impacts of the experiments.}
+		\label{tab:ranova}
 \end{table}\noindent
+The mean differences of the groups when compared to the control (experiment 16 with no cylinder) and their test statistics from the ANOVA are given below. All these differences were given a \(p<2.2\ctp{-16}\) and a std. error on the difference of \(0.029\) while the control mean had a std. error of \(0.093\).
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{c|ll}
+		Experiment & Mean estimate & $ t $-statistic \\\hline 
+		Control           & -1.16    & -12.4           \\\hline 
+		1                 & +0.36     & 12.5            \\
+		2                 & +1.12     & 38.9            \\
+		3                 & +0.252    & 8.72            \\
+		4                 & +0.710    & 24.6            \\
+		5                 & +1.44     & 49.9            \\
+		6                 & +0.489    & 16.9            \\
+		7                 & +1.16     & 40.2            \\
+		8                 & +1.84     & 63.8            \\
+		9                 & +0.704    & 24              \\
+		10                & +1.59     & 55.1            \\
+		11                & +2.50     & 39.3            \\
+		12                & +1.14     & 39.3            \\
+		13                & +2.10     & 72.8            \\
+		14                & +3.22     & 111             \\
+		15                & --0.613   & -21.2          
+	\end{tabular}
+\end{table}
 
 \section{Discussion and Conclusion}
-\paragraph{Validity of statistical analyses} The parametric McNemar test is re noted to approximation fromasymptotic theory and \cite{Tue} states that the \(p\)-values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\). This is seen to hold for all the matrices (the sums being 31, 58 and 49 for the comparisons) such that the results of the McNemar comparisons are seen as accurate.
+\paragraph{Validity of statistical analyses} The parametric McNemar test is noted to be an approximation from asymptotic theory and \cite{Tue} states that the \(p\)-values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\). This is seen to hold for all the matrices (the sums being 31, 58 and 49 for the comparisons) such that the results of the McNemar comparisons are seen as accurate.
 
-One major assumption of ANOVA is that the residuals are normally distributed.
-As figure \ref{fig:qq} shows, this is somewhat true, but with many exceptions, so the results should be taken with a grain of salt.
+The four-way ANOVA on the other hand has some major issues with model assumptions. The assumption of independence is arguably realized as all observations are fully divided by these four groups and should not be connected in any more way. This was also the motivation for doing the full four-way analysis and including each single of the 300 coordinates as a factor.
+
+The assumption of variance homogeneity is visualized with boxplots. For experiment, which is the goal of this test, it seems somewhat reasonable bar some outliers, especially in experiment 5, at this zoom level. Similar boxplots for person and repetition are included in the appendix and look very similar with single outliers at figure \ref{fig:vars}.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\textwidth]{qq}
-	\caption{Histogram and QQ-plot of the residuals of a linear model.}\label{fig:qq}
+	\includegraphics[width=.7\textwidth]{var_exp}
+\label{fig:vexp}
+\end{figure}\noindent
+Finally, the assumption of residual normality of ANOVA is checked using a histogram and a quantile/quantile visualization. This assumption shows clear problems: The residual distribution is too narrow for the normal bell curve and has long tails and negative outliers. This severely limits the accuracy of the statistical claims of the ANOVA and results in a higher risk of type I errors than the \(p\)-values indicate.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.7\textwidth]{qq}
+	\caption{Histogram and quantile/quantile-plot of the residuals of the ANOVA model.}\label{fig:qq}
 \end{figure}
 \subsection{Classification of persons}
 %The initial visualizations of the data in the 3D and 2D scatter plots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction.  
@@ -268,11 +278,57 @@ As seen on table \ref{tab:ranova}, most of the variance was explained by the coo
 		\centering
 		\includegraphics[width=.5\linewidth]{p1_example2}
 	}
-	\caption{Floats}
+	\caption{Visualization of two first yadda}
 	\label{fig:2dtrajects}
 \end{figure}
 
-
+\begin{figure}[H]
+	\centering
+	\subfloat{
+		\includegraphics[width=.5\linewidth]{var_person}
+	}
+	\subfloat{5
+		\centering
+		\includegraphics[width=.5\linewidth]{var_rep}
+	}
+	\caption{Variance homogeneity checked for persons and repetitions. Person 2 and repetition 7 have some problematic outlier behaviour. Coordinate was not checked for variance homogeneity as it was difficult to visualize these 300 factors. }
+	\label{fig:vars}
+\end{figure}
+%\begin{table}[H]
+%	\centering
+%	\begin{tabular}{lrrrrr}
+%		          &     Df&    Sum Sq& Mean Sq&   $ F $ value&    Pr($ < $F)    \\
+%		coordinate&    299& 230298000&  770227& 61477.804&  $ < $2.2e-16 ***\\
+%		repetition&      9&     10036&    1115&    89.007&  $ < $2.2e-16 ***\\
+%		person    &      9&    124551&   13839&  1104.595&  $ < $2.2e-16 ***\\
+%		experiment&     15&    433652&   28910&  2307.543&  $ < $2.2e-16 ***\\
+%		Residuals & 479631&   6009079&      13& &
+%\end{tabular}
+%\caption{R output from ANOVA. Three asterisks mean significance at a significance level of $ \alpha=0.1\pro $.}\label{tab:ranova}
+%\end{table}
+%\begin{table}[H]
+%	\centering
+%	\begin{tabular}{lrrrr}
+%		&Estimate &Std. Error &$ t $-statistic &\(p\)-value\\
+%		\hline 
+%		Control&    -1.16&   0.093391& -12.409&  $ < $ 2e-16 \\\hline
+%		experiment1&     0.36&   0.028900&  12.523&  $ < $ 2e-16 \\
+%		experiment2&     1.12&   0.028900&  38.847&  $ < $ 2e-16 \\
+%		experiment3&     0.252&   0.028900&   8.721&  $ < $ 2e-16 \\
+%		experiment4&     0.710&   0.028901&  24.584&  $ < $ 2e-16 \\
+%		experiment5&     1.44&   0.028900&  49.900&  $ < $ 2e-16 \\
+%		experiment6&     0.489&   0.028901&  16.901&  $ < $ 2e-16 \\
+%		experiment7&     1.16&   0.028900&  40.196&  $ < $ 2e-16 \\
+%		experiment8&     1.84&   0.028900&  63.795&  $ < $ 2e-16 \\
+%		experiment9&    0.704&   0.028902&  24.354&  $ < $ 2e-16 \\
+%		experiment10&    1.59&   0.028902&  55.087&  $ < $ 2e-16 \\
+%		experiment11&    2.50&   0.028900&  39.275&  $ < $ 2e-16 \\
+%		experiment12&    1.14&   0.028903 & 39.275 & \(<\) 2e-16\\	
+%		experiment13&    2.10&   0.028902&  72.780&  $ < $ 2e-16 \\
+%		experiment14&    3.22&   0.028900& 111.393&  $ < $ 2e-16 \\
+%		experiment15&   -0.613&   0.028900& -21.205&  $ < $ 2e-16 
+%	\end{tabular}
+%\end{table}\noindent
 \end{document}
 
 

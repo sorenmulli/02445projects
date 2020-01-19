@@ -223,14 +223,33 @@ arm_dataframe <- data.frame(
 #Use last (control) experiment as reference
 levels(arm_dataframe$experiment) <-c(2:16, 1)
   
-model <- lm(pos ~ coordinate + repetition + person + experiment);
-options(max.print = 10000);
+model <- lm(pos ~ experiment+coordinate + repetition + person);
 anova(model);
 summary(model);
+
 par(mfrow = c(1, 2));
-hist(model$residuals);
+hist(model$residuals, breaks = 100, main = "ANOVA residuals", xlab = "Residuals");
 qqnorm(model$residuals);
 qqline(model$residuals);
+
+
+
+par(mfrow = c(1,1))
+plot(experiment[!is.na(pos)], model$residuals, 
+     xlab = "Experiment no.",
+     ylab = "Residuals")
+
+plot(repetition[!is.na(pos)], model$residuals, 
+     xlab = "Repetition no.",
+     ylab = "Residuals")
+
+plot(person[!is.na(pos)], model$residuals, 
+     xlab = "Person no.",
+     ylab = "Residuals")
+
+
+
+
 
 plot1_dataframe <- subset(arm_dataframe, experiment == 4 & (person == 1))
 plot1_dataframe$x_coord <- plot1_dataframe$pos[plot1_dataframe$coordinate == "x"]

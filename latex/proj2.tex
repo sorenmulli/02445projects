@@ -122,18 +122,18 @@ The paired \(t\)-test comparison of the nine cross validation test errors for th
 The results of the ANCOVA and corresponding \(F\)-test:  
 \begin{table}[H]
 	\centering
-	\begin{tabular}{c |  c c c}
-	\textbf{DGT-model}  & MSE&\(F\)-value&\(p\)-value\\
+	\begin{tabular}{c | c c c c}
+	\textbf{DGT-model}  &Degrees of freedom & MSE&\(F\)-value&\(p\)-value\\
 	\hline 
-	Location  & 826 & 90 & \(4\ctp{-16}\)\\
-	DGT  & 1735 &  188 & \(4\ctp{-13}\)\\
-	Residuals & 9.23 &\\
+	Location  & 1& 826 & 90 & \(4\ctp{-16}\)\\
+	DGT  & 7&1735 &  188 & \(4\ctp{-13}\)\\
+	Residuals &25 &9.23 &\\
 	\hline 
-	\textbf{Olsen P-model}  & MSE&\(F\)-value&\(p\)-value\\
+	\textbf{Olsen P-model} &Degrees of freedom & MSE&\(F\)-value&\(p\)-value\\
 	\hline 
-	Location &933 & 101 & \(<2\ctp{-16}\)\\
-	Olsen P & 982 & 106 & \(2 \ctp{-10}\)\\
-	Residuals & 9.23
+	Location & 1&933 & 101 & \(<2.2\ctp{-16}\)\\
+	Olsen P &7 &982 & 106 & \(2 \ctp{-10}\)\\
+	Residuals &25  &9.23
 	\end{tabular}
 \end{table}\noindent 
 The slopes for the ANCOVA models and their std. errors are estimated to:
