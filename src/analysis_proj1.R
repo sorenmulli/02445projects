@@ -230,8 +230,9 @@ for (i in 1:length(coordinates)) {
 	coor = coordinates[i];
 	print(coor);
 	s = subset(arm_dataframe, arm_dataframe$coordinate == coor);
-	model <- lm(s$pos ~ s$experiment + s$person);
+	model <- lm(s$pos ~ s$experiment * s$person);
 	an <- anova(model);
+	print(an)
 	ps <- c(ps, an$`Pr(>F)`[1]);
 	if ((i + 15) %% 25 == 0) {
 		hist(model$residuals, main = paste("Model residuals for", `coor`), xlab = "Residual");

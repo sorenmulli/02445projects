@@ -6,11 +6,12 @@
 \usepackage{MediocreMike}
 %\usepackage{Blastoise}
 \usepackage{listings}
-
 \usepackage{float}
 \usepackage[caption = false]{subfig}
-\title{}
-\author{Asger Schultz}
+\usepackage{hyperref}
+
+\title{Course 02445 -- Project I\\Human Arm Trajectories in Obstacle Avoidance}
+\author{Asger Laurits Schultz and Søren Winkel Holm\\s183912 and s183911}
 \date{\today}
 
 \fancypagestyle{plain}
@@ -21,9 +22,9 @@
 }
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{Asger Schultz}
-\chead{}
-\rhead{}
+\lhead{Asger Laurits Schultz\\Søren Winkel Holm}
+\chead{\today}
+\rhead{Course 02445\\Project 1}
 \rfoot{Side \thepage{} af \pageref{LastPage}}
 
 \graphicspath{{Billeder/}}
@@ -52,6 +53,8 @@ It is thus an obvious question whether the difference in movement between people
 
 Two simple machine learning models, a classification tree and a 3-nearest neighbour classifier, are tested on this human classification task in a single arm movement experiment where subects moved cylinders of different sizes and weights over obstacles. Furthermore, a statistical test is performed on 16 arm movement experiments to test whether the type of task was signficantly different.
 
+All code is available in the \texttt{src} folder at \url{https://github.com/sorenmulli/02445projects.git}.
+
 \section{Data}
 The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
 The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
@@ -78,7 +81,7 @@ For the first part of the report, we investigated only experiment 4, so we had a
 The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
 
 Later, we tested wether or not the experiment had a significant effect.
-For this, we ravelled the data points into a vector of length $ 480,000 $, which is explained in more details in section \ref{subsec:expeffect}.
+For this, we ravelled the data points into a vector of length $ 480,000 $ and used different subsets, which is explained in more details in section \ref{subsec:expeffect}.
 
 
 \section{Methods and analysis}
@@ -87,11 +90,15 @@ For this, we ravelled the data points into a vector of length $ 480,000 $, which
 \subsection{Machine Learning Task: Classification}
 Two machine learning models were chosen to test on this 300-dimensional 10-class data.
 It is noted from initial plots -- fig. \ref{fig:trajects} and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear, such that models that can model nonlinear decision boundaries are considered.
+
+
 \paragraph{Models} The two chosen models were a binary classification tree and a 3-nearest neighbour classifier. The classification tree used the implementation of Hunt's algorithm of the \texttt{tree} package in \texttt{R} \cite{Tree}. For splitting criterion, the \textit{deviance} is used which is based on minus two times the log likelihood of the data under each model that the split results in \cite{Deviance}.
 
 The second model was the \(K\)-nearest neighbour classifier which predicts classes using \(K\) nearest data points in the training set in euclidean distance and tie breaking by increasing \(K\) for the data point as implemented in the \texttt{R} package \texttt{class} \cite{KNN}. Before training on the data set, the hyper parameters of both models were defined and were not subject for testing. \(K\) set to 3 as it was deemed suitable for the 10-class setting.
 
 To evaluate the performance of the models, a classification baseline was set. As the classes are perfectly balanced, a baseline is expected to reach 10\pro\ accuracy. As no class is the largest, the baseline is constructed by randomly guessing classes to avoid skewing the evaluation towards any class as this might make a difference for the McNemar test.
+
+
 \paragraph{Performance evaluation}
 To evaluate which machine learning model best predicts which person completed the tasks, leave-one-out cross validation is implemented thus training the models on 99 data points and and testing on the last for each fold.
 From here, 100 predictions are obtained which are used to achieve a point estimate for the accuracy of the classifiers.
@@ -103,25 +110,24 @@ From this test, a \(p\)-value for the null hypothesis that the two classifiers h
 These tests consider the matched-pair matrix which counts the number of times the classifiers both are wrong, the number of times they both are right, the number of times one is better than the other (\(n_{12}\)) and vice versa (\(n_{21}\)).
 Intuitively, this takes into account that some classifications might be more difficult than others. 
 This is the motivation for the random baseline.
+
+
 \subsection{Test of experiment effect}\label{subsec:expeffect}
 Analysis of Variance, ANOVA, is used to compare the mean positional values between the groupings in the data with focus on detecting if there is a significant difference between the experiments.
-This test of whether the overall mean is due to random variation using variability decomposition is done on a linear, four-way, additive model:
+This test of whether the overall mean is due to random variation using variability decomposition is done on a linear, two-way, additive model:
 \[
-y_{ijkl} = \alpha_{\text{experiment } i}+
-\beta_{\text{person } j}
-+ \gamma_{\text{repetition } k}+
-\tau_{\text{coordinate } l}
-+ \epsilon_{ijkl}, \quad \epsilon_{ijkl} \sim \mathcal N (0, \sigma^2)
+	y_{ijkl} = \alpha_{\text{experiment } i}+
+	\beta_{\text{person } j}
+	+ \epsilon_{ijkl}, \quad \epsilon_{ijkl} \sim \mathcal N (0, \sigma^2)
 \]
-The additive model was assumed due to memory limitations for the data set consisting of 480,000 values.
-The null hypothesis which was the focus of the test was $ H_0: \alpha_1=\alpha_2=\ldots=\alpha_{16} $ but the three other groupings where included to strengthen the test by taking the variance within these groups into account and to assure that the data points were independent. 
+The null hypothesis which was the focus of the test was $ H_0: \alpha_1=\alpha_2=\ldots=\alpha_{16} $ but the person was included to strengthen the test by taking the variance within this group into account and to assure that the data points were independent. 
+The additive model was assumed to improve runtime, as prelimenary runs showed interaction effects having little to no effect on the significance of the experiment.
 
-In order to use ANOVA, all the 480,000 data points were ravelled into a vector of the same length.
-Four similar vectors where then created for the explanatory variables.
-The innermost, \(\tau\) contained the 300 coordinates features, such as \texttt{z3} for the third $ z $-value.
+Because ANOVA compares the means of different groups, it is relevant to compare the effect of the experiments one feature at a time.
+We therefore ravelled all 480,000 data points in to a vector, and split them into subsets of $ 1,600 $ data points, each corresponding to one of the $ 300 $ coordinate features.
+This also ensured independence between the observations, as e.g. one $ x_1 $ value would have had no influence on another.
 
-The next, \(\gamma\) contained the ten repetitions, the third, \(\beta\) the 10 people, and the fourth \(\alpha \), the one of interest, the 16 experiments (which were reordered to set experiment 1 to the control).
-We then used the linear model with R's \texttt{lm} function followed by \texttt{anova} to perform a four-way ANOVA.
+Running ANOVA on each subset yielded 300 $ p $ values, each describing the effect of the experiment on a particular coordinate vector. 
 
 
 \section{Results}
@@ -168,6 +174,7 @@ Estimate for accuracy difference, 99\pro\ confidence interval and \(p\)-value fo
 \[
 \widehat{\Delta \theta} = 48\pro,\quad  \Delta \theta\in[33\pro , 61\pro], \quad p = 3.5\ctp{-11}
 \]
+
 \paragraph{Comparison of classification tree and baseline}
 Matched pair matrix:
 
