@@ -223,56 +223,116 @@ arm_dataframe <- data.frame(
 #Use last (control) experiment as reference
 # levels(arm_dataframe$experiment) <-c(2:16, 1)
 
-options("max.print" = 100);
+options("max.print" = 200);
 ps <- c();
+msqs <- c();
+
+inter_ps <- c();
+inter_msqs <- c();
+
+person_ps <- c();
+person_msqs <- c();
+
+resi_msqs <- c();
 par(mfrow = c(3, 4));
+
 for (i in 1:length(coordinates)) {
 	coor = coordinates[i];
 	s = subset(arm_dataframe, arm_dataframe$coordinate == coor);
-	model <- lm(s$pos ~ s$experiment + s$person);
+	model <- lm(s$pos ~ s$experiment * s$person);
 	an <- anova(model);
+	
+	msqs <- c(msqs, an$`Mean Sq`[1]);
 	ps <- c(ps, an$`Pr(>F)`[1]);
+	
+	person_ps <- c(person_ps, an$`Pr(>F)`[2]);
+	person_msqs <- c(person_msqs, an$`Mean Sq`[2]);
+	
+	
+	inter_ps <- c(inter_ps, an$`Pr(>F)`[3]);
+	inter_msqs <- c(inter_msqs, an$`Mean Sq`[3]);
+	
+	resi_msqs <- c(resi_msqs, an$`Mean Sq`[4]);
+	
 	if ((i + 15) %% 25 == 0) {
 	  print(coor);
 	  print(an);
-		hist(model$residuals, main = paste("Model residuals for", `coor`), xlab = "Residual");
+	  plot(s$experiment[!is.na(s$pos)], model$residuals, 
+	       main = paste("Model residuals for", `coor`),
+	       xlab = "Experiment no.",
+	       ylab = "Residuals")
+	  
+	  #qqnorm(model$residuals, main = paste("Model residuals for", `coor`));
+	  
+	  #qqline(model$residuals);
+	  #hist(model$residuals, main = paste("Model residuals for", `coor`), xlab = "Residuals", breaks = 50);
 	}
+	summary(model)
 }
+
+mean(msqs);
+mean(person_msqs)
+mean(inter_msqs);
+mean(resi_msqs)
+
+par(mfrow = c(1, 3));
+unordered <- p.adjust(ps, method = "BH");
+plot( unordered[1:100], main = "X-coordinate: Adjusted p values", ylab = "p", xlab ="x-coordinate");
+plot( unordered[100:200], main = "Y-coordinate: Adjusted p values", ylab = "p", xlab ="y-coordinate");
+plot( unordered[200:300], main = "Z-coordinate:  Adjusted p values", ylab = "p", xlab ="z-coordinate");
+
+
 par(mfrow = c(1, 2));
 sorted <- sort(ps);
 plot(sorted, main = "Unadjusted, sorted p values", ylab = "p");
 adjusted <- p.adjust(sorted, method = "BH");
 plot(adjusted, main = "Adjusted, sorted p values", ylab = "p");
-alpha <- .05;
+
+
+alpha <- .01;
 print(mean(sorted < alpha));
 print(mean(adjusted < alpha));
+
 print(sum(sorted < alpha));
 print(sum(adjusted < alpha));
 
-model <- lm(pos ~ experiment + coordinate + repetition + person);
-anova(model);
-summary(model);
-
-model <- lm(pos ~ experiment);
-anova(model);
-summary(model);
+mean(person_ps < alpha);
+mean(p.adjust(person_ps, method = "BH") < alpha);
+sum(person_ps < alpha);
+sum(p.adjust(person_ps, method = "BH") < alpha);
 
 
-par(mfrow = c(1, 2));
-hist(model$residuals, breaks = 100, main = "ANOVA residuals", xlab = "Residuals");
-qqnorm(model$residuals);
-qqline(model$residuals);
+mean(inter_ps < alpha);
+mean(p.adjust(inter_ps, method = "BH") < alpha);
+sum(inter_ps < alpha);
+sum(p.adjust(inter_ps, method = "BH") < alpha);
 
 
 
-par(mfrow = c(1, 1))
+#model <- lm(pos ~ experiment + coordinate + repetition + person);
+#anova(model);
+#summary(model);
+
+#model <- lm(pos ~ experiment);
+#anova(model);
+#summary(model);
+
+
+#par(mfrow = c(1, 2));
+#hist(model$residuals, breaks = 100, main = "ANOVA residuals", xlab = "Residuals");
+#qqnorm(model$residuals);
+#qqline(model$residuals);
+
+
+
+#par(mfrow = c(1, 1))
 plot(experiment[!is.na(pos)], model$residuals, 
      xlab = "Experiment no.",
      ylab = "Residuals")
 
-plot(repetition[!is.na(pos)], model$residuals, 
-     xlab = "Repetition no.",
-     ylab = "Residuals")
+#plot(repetition[!is.na(pos)], model$residuals, 
+ #    xlab = "Repetition no.",
+  #   ylab = "Residuals")
 
 plot(person[!is.na(pos)], model$residuals, 
      xlab = "Person no.",

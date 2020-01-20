@@ -39,10 +39,16 @@
 \begin{document}
 
 \maketitle
-%\thispagestyle{fancy}
+\thispagestyle{empty}
 %\tableofcontents
-\tableofcontents
-\newpage 
+%\tableofcontents
+\renewcommand{\abstractname}{Summary}
+\begin{abstract}
+yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda 
+\end{abstract}
+\clearpage
+\newpage
+\setcounter{page}{1}
 
 
 \section{Introduction}
@@ -56,12 +62,6 @@ Two simple machine learning models, a classification tree and a 3-nearest neighb
 All code is available in the \texttt{src} folder at \url{https://github.com/sorenmulli/02445projects.git}.
 
 \section{Data}
-The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
-The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
-Thus, the data was structured in a $ 16\times 10\times 10 $ array, with axes: experiment\(\times\)person\(\times\)repetition.
-For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
-The data had been preprocessed such that every curve was of the same length.
-Some of the movements are plotted in figure \ref{fig:trajects}.
 \begin{figure}[H]
 	\centering
 	\subfloat{
@@ -74,14 +74,20 @@ Some of the movements are plotted in figure \ref{fig:trajects}.
 	\label{fig:trajects}
 	\caption{Hand movements of two different people in the fourth experiment.}
 \end{figure}
+The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
+The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
+Thus, the data was structured in a $ 16\times 10\times 10 $ array, with axes: experiment\(\times\)person\(\times\)repetition.
+For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
+The data had been preprocessed such that every curve was of the same length.
+Some of the movements are plotted in figure \ref{fig:trajects}.
 
-\noindent 
-For our purposes, it was benificial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
+For our purposes, it was beneficial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
 For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
 The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
 
 Later, we tested wether or not the experiment had a significant effect.
 For this, we ravelled the data points into a vector of length $ 480,000 $ and used different subsets, which is explained in more details in section \ref{subsec:expeffect}.
+
 
 
 \section{Methods and analysis}
@@ -116,18 +122,19 @@ This is the motivation for the random baseline.
 Analysis of Variance, ANOVA, is used to compare the mean positional values between the groupings in the data with focus on detecting if there is a significant difference between the experiments.
 This test of whether the overall mean is due to random variation using variability decomposition is done on a linear, two-way, additive model:
 \[
-	y_{ijkl} = \alpha_{\text{experiment } i}+
-	\beta_{\text{person } j}
-	+ \epsilon_{ijkl}, \quad \epsilon_{ijkl} \sim \mathcal N (0, \sigma^2)
+	y_{ij} = \alpha_{\text{experiment } i}+
+	\beta_{\text{person } j}+ 
+	\gamma_{\text{experiment } i \times\text{person } j }
+	+ \epsilon_{ijkl}, \quad \epsilon_{ij} \sim \mathcal N (0, \sigma^2)
 \]
 The null hypothesis which was the focus of the test was $ H_0: \alpha_1=\alpha_2=\ldots=\alpha_{16} $ but the person was included to strengthen the test by taking the variance within this group into account and to assure that the data points were independent. 
-The additive model was assumed to improve runtime, as prelimenary runs showed interaction effects having little to no effect on the significance of the experiment.
+The multiplicative model was used to capture the entity of the effects in the data and avoid the observations being non-independent.
 
 Because ANOVA compares the means of different groups, it is relevant to compare the effect of the experiments one feature at a time.
 We therefore ravelled all 480,000 data points in to a vector, and split them into subsets of $ 1,600 $ data points, each corresponding to one of the $ 300 $ coordinate features.
 This also ensured independence between the observations, as e.g. an $ x_1 $ value would have had no influence on another.
 
-Running ANOVA on each subset yielded 300 $ p $ values, each describing the effect of the experiment on a particular coordinate vector. 
+Running ANOVA on resulted in the test containing 300 tests and thus returning 300 $ p $ values, each describing the effect of the experiment on a particular coordinate vector. These were then corrected with the Benjamini-Hochberg method \cite{BH}.
 
 
 \section{Results}
@@ -193,26 +200,60 @@ Estimate for accuracy difference, 99\pro\ confidence interval and \(p\)-value fo
 \]
 
 \subsection{Impact of experiment}
-We found that 261 of the 300 (87\pro) $ p $ values describing the experiment significance on a given coordinate feature were significant at a significance level of $ \alpha=5\pro $. Correcting them using the Benjamini-Hochberg method \cite{BH} left 260 (86.67\pro) significant $ p $ values. Their distribution can be seen on figure \ref{fig:sortp}.
+The results of the 300 two-way ANOVA's is given below. With \(N\) sign. tests is meant the amount of tests significant at \(\alpha = 0.01\). BH is referring to the Benjamini-Hochberg adjustment to account for the 300 tests. The \(\overline{ MSE}\) is computed as the average of the 300 MSE's
+\begin{table}[H]
+	\centering
+	\begin{tabular}{l | c c c c}
+		300 ANOVA's & \(\overline{MSE}\) & \(N\) sign. tests& \(N\) BH-sign. tests& Freq. BH-sign. tests\\
+		\hline 
+		Experiment  & 659 	& 258 & 258 	& 86\pro	\\
+		Person  & 648 		&  300 & 300	&100\pro  \\
+		Experiment\(\times\)Person&7.61  & 218 & 217 &	72\pro	\\
+		Residuals &3.6 &			
+	\end{tabular}
+	\label{tab:ranova}
+\end{table}\noindent
+The distribution of \(p\)-values of the experiment can be seen in the below on figure \ref{fig:sortp}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.8\textwidth]{pvalues}
+	\caption{Sorted $ p $ values. On the right figure, they are adjusted using the Benjamini-Hochberg correction algorithm.}\label{fig:sortp}
+\end{figure}
 
 \section{Discussion and Conclusion}
 \paragraph{Validity of statistical analyses}
 The parametric McNemar test is noted to be an approximation from asymptotic theory and \cite{Tue} states that the \(p\) values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\). This is seen to hold for all the matrices (the sums being 31, 58 and 49 for the comparisons) such that the results of the McNemar comparisons are seen as accurate.
 
-The four-way ANOVA on the other hand has some major issues with model assumptions. The assumption of independence is arguably realized as all observations are fully divided by these four groups. This was also the motivation for doing the full four-way analysis and including each single of the 300 coordinates as a factor. It must, however, be noted that interactions between these four groupings were not tested.
 
-The assumption of residual variance homogeneity is visualized with boxplots. For \textit{experiment}, which is the goal of this test, it seems reasonable bar some outliers, especially in experiment 5, at this zoom level. Similar boxplots for person and repetition are included in the appendix  at figure \ref{fig:vars} and look very similar with single outliers.
+For the 300 two-way ANOVA's, it is challenging to visualize the important assumptions of residual normality and residual variance homogeneity. An arbitrary subset of the 300 tests is thus chosen and visualized. Below, figure \ref{fig:qq} substantiates the assumption of normality as only minor outliers and non-normal tendencies can be seen. These residual populations are also visualized as histograms in the appendix, figure \ref{fig:residuals}.
+
+The assumption of variance homogeneity for the \textit{experiment} factors is in the same vein visualized by boxplots of these same 12 coordinate features. 
+From this (somewhat overwhelming) plot at figure \ref{fig:vars}, the assumptions seem reasonably well fulfilled at the given zoom level as only few of these coordinate tests have experiment levels with visibly differing variance.  
+The assumption that the errors are regarded as fulfilled between the groups of experiments and people, but the repetition number was not included in the ANOVA such that this could be a source of unmodelled grouping of the data. 
+For further work these two-way ANOVA could be expanded to three-way to include this variation even though it is not expected to explain a large portion of the variability in the positional data.
+
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.7\textwidth]{var_exp}
-\label{fig:vexp}
+	\includegraphics[width=.9\textwidth]{qq}
+	\caption{Quantile/quantile-plots of the residuals of twelve of the 300 ANOVA models. Major problems are only seen in the bottom rightmost.}\label{fig:qq}
 \end{figure}\noindent
-Finally, the assumption of residual normality of ANOVA is checked using a histogram and a quantile/quantile visualization. This assumption shows clear problems: The residual distribution is too narrow for the normal bell curve and has long tails and negative outliers. This severely limits the accuracy of the statistical claims of the ANOVA and results in a higher risk of type I errors than the \(p\) values indicate.
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\textwidth]{qq}
-	\caption{Histogram and quantile/quantile-plot of the residuals of the ANOVA model.}\label{fig:qq}
-\end{figure}
+For this large amount of tests, the assumptions in each are not fully tested. 
+Thus, to achieve precise measurements of number of significant tests, the model validation should include  full investigation of residual distribution including search for nonlinear effects in the tests.
+Furthermore, examinations of variance homogeneity with regards to the \textit{person} factors and the interactions should be carried out. 
+%The four-way ANOVA on the other hand has some major issues with model assumptions. The assumption of independence is arguably realized as all observations are fully divided by these four groups. This was also the motivation for doing the full four-way analysis and including each single of the 300 coordinates as a factor. It must, however, be noted that interactions between these four groupings were not tested.
+%
+%The assumption of residual variance homogeneity is visualized with boxplots. For \textit{experiment}, which is the goal of this test, it seems reasonable bar some outliers, especially in experiment 5, at this zoom level. Similar boxplots for person and repetition are included in the appendix  at figure \ref{fig:vars} and look very similar with single outliers.
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=.7\textwidth]{var_exp}
+%\label{fig:vexp}
+%\end{figure}\noindent
+%Finally, the assumption of residual normality of ANOVA is checked using a histogram and a quantile/quantile visualization. This assumption shows clear problems: The residual distribution is too narrow for the normal bell curve and has long tails and negative outliers. This severely limits the accuracy of the statistical claims of the ANOVA and results in a higher risk of type I errors than the \(p\) values indicate.
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=.7\textwidth]{qq}
+%	\caption{Histogram and quantile/quantile-plot of the residuals of the ANOVA model.}\label{fig:qq}
+%\end{figure}
 
 \subsection{Classification of persons}
 %The initial visualizations of the data in the 3D and 2D scatter plots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction.  
@@ -223,18 +264,30 @@ It is seen that the expectation of some accuracy was confirmed: The 3-nearest ne
 The models were not tested for complexity controlling hyper parameters such as \(K\) for the KNN or the impurity function for the tree model and possible improvements could be found here. A larger improvement could be found in much more complex models for this high-dimensional data set such as random forests or deep neural networks. More generalizable performance could also be found by using the entire data set, not just experiment 4, to find more general personal  features and mannerisms.
 
 \subsection{Test of difference in experiments}
-No data is a perfect representation of reality, as it only represents a potentially noisy subset.
-In the case that the experiment had no effect on the movements, it would therefore still be expected to find that $ 5\pro $ of the $ p $ values are significant at a $ 5\pro $ significance level.
-However, we found that, even after correcting the $ p $ values, 86.67\pro\ of them were significant at our significance level of $ 5\pro $.
+As no data is a perfect representation of reality, under the null hypothesis, it would still be expected to find that $ 1\pro $ of the $ p $ values are significant at a $ 1\pro $ significance level. However, we found that, even after correcting the $ p $ values, 86\pro\ of them were significant at our significance level of $ 1\pro $.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.9\textwidth]{coordinate_ps}
+	\caption{Benjamini-Hochberg corrected $ p $ from the 300 ANOVA \(F\) tests divided based on their corresponding coordinate features.}\label{fig:unsortp}
+\end{figure}\noindent 
+It is noted with some surprise that the \(p\)-value adjustments had very little effect. This is connected to the high-variance \(p\)-value distribution which shows that most values are very close to 0 but a minority have dramatically higher \(p\)-values as can be seen in figures \ref{fig:sortp}, \ref{fig:unsortp}. To understand this distribution, figure \ref{fig:unsortp} shows the \(p\)-values sorted after the test's corresponding coordinate.  
+A common sense expectation is confirmed: The high \(p\)-values -- where the means of the experiments are very similar -- occur at the beginning and end of the coordinates as most experiments start and end in the same way. 
+Especially the \(y\) coordinate shows high \(p\) values in the end suggesting that the experiments are designed in a way where similar movements are needed in the \(y\)-direction in the end. 
+This sharp division of the tests is further amplified by numeric underflow as 19\pro of the \(p\)-values are below float precision and are coerced to 0.
+\\\\
+As the goal of the test was to find if it was possible to distinguish the experiments from these tests, the null hypothesis can be rejected as this overwhelming amount of significant tests gives a high of evidence against the experiment being without effect of the curves.
+This conclusion is seen as significant even though some normality and independence assumptions are not fully tested as such convincing amount of evidence is found.
+ 
+The test method could be improved by including the repetition factor, performing non-parametric tests which do not require normality or using feature-specific data transformations to help improve the normality of the residuals.
 
-One of the major assumptions underlying ANOVA is that the residuals of the linear model are normally distributed.
-We plotted these for some of the coordinate features as shown on figure \ref{fig:residuals}.
-As the figure shows, the residuals follow normal distributions reasonably well, which supports the findings of ANOVA.
+The experiment also had an effect in connection with the person: The tests also found significant effects of the interaction between the experiment and the people at \(72\pro\) of the tests though this on average explained much less of the variability than the other groups.
 
-Given this and the much higher than expected number of significant $ p $ values, given the null hypothesis, we conclude that the experiment did indeed have a statistically significant impact on the arm trajectories of the test subjects.
+The \textit{person} factor was found to have significant differences on every one of the 300 tests. Person-to-person variability in arm movement is thus so high that differences between these 10 people can be found in every coordinate -- a result which gives further credence to the possibility of success in the human movement classification task.
 
-That is not to say, however, that certain improvements could not be implemented.
-Feature-specific data transformations could help improve the normality of the residuals.
+
+
+
+
 
 %The ANOVA finds that the experiment had a statistically significant impact on the hand movements of the test subjects with $ p<2.2\ctp{-16} $.
 %This was also the case for every individual experiment which was found to be different from the control with the smallest estimeate mean difference being experiment 3 with \(0.252\) and the largest being experiment 14 with \(3.22\).
@@ -247,7 +300,7 @@ Feature-specific data transformations could help improve the normality of the re
 %To test this conclusion further, non-parametric rank-sum tests or bootstrapping to achieve normality should be implemented.
 
 
-
+\newpage
 \begin{thebibliography}{9}
 	\bibitem{Tue} Herlau, Tue et al. "Introduction to Machine Learning and Data Mining: Lecture notes, Fall 2019, version 1.4b" 13/12-19.
 		\bibitem{kine} The University of British Columbia: School of Kinesiology:
@@ -266,6 +319,7 @@ Feature-specific data transformations could help improve the normality of the re
 
 \end{thebibliography}
 \appendix
+\newpage 
 \section{Figures}
 \begin{figure}[H]
 	
@@ -283,64 +337,19 @@ Feature-specific data transformations could help improve the normality of the re
 
 \begin{figure}[H]
 	\centering
-	\subfloat{
-		\includegraphics[width=.5\linewidth]{var_person}
-	}
-	\subfloat{
-		\centering
-		\includegraphics[width=.5\linewidth]{var_rep}
-	}
-	\caption{Variance homogeneity checked for persons and repetitions. Person 2 and repetition 7 have some problematic outlier behaviour. Coordinate was not checked for variance homogeneity as it was difficult to visualize these 300 factors. }
+	\includegraphics[width=\linewidth]{var_experio}
+	\caption{Visualization of the residual distributions of some of the coordinate features. }
 	\label{fig:vars}
 \end{figure}
 
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.7\textwidth]{pvalues}
-	\caption{Sorted $ p $ values. On the right figure, they are adjusted using the Benjamini-Hochberg correction algorithm.}\label{fig:sortp}
-\end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.9\textwidth]{residuals}
 	\caption{Distributions of the residuals of linear models for some of the coordinate features.}\label{fig:residuals}
 \end{figure}
-%\begin{table}[H]
-%	\centering
-%	\begin{tabular}{lrrrrr}
-%		          &     Df&    Sum Sq& Mean Sq&   $ F $ value&    Pr($ < $F)    \\
-%		coordinate&    299& 230298000&  770227& 61477.804&  $ < $2.2e-16 ***\\
-%		repetition&      9&     10036&    1115&    89.007&  $ < $2.2e-16 ***\\
-%		person    &      9&    124551&   13839&  1104.595&  $ < $2.2e-16 ***\\
-%		experiment&     15&    433652&   28910&  2307.543&  $ < $2.2e-16 ***\\
-%		Residuals & 479631&   6009079&      13& &
-%\end{tabular}
-%\caption{R output from ANOVA. Three asterisks mean significance at a significance level of $ \alpha=0.1\pro $.}\label{tab:ranova}
-%\end{table}
-%\begin{table}[H]
-%	\centering
-%	\begin{tabular}{lrrrr}
-%		&Estimate &Std. Error &$ t $-statistic &\(p\)-value\\
-%		\hline 
-%		Control&    -1.16&   0.093391& -12.409&  $ < $ 2e-16 \\\hline
-%		experiment1&     0.36&   0.028900&  12.523&  $ < $ 2e-16 \\
-%		experiment2&     1.12&   0.028900&  38.847&  $ < $ 2e-16 \\
-%		experiment3&     0.252&   0.028900&   8.721&  $ < $ 2e-16 \\
-%		experiment4&     0.710&   0.028901&  24.584&  $ < $ 2e-16 \\
-%		experiment5&     1.44&   0.028900&  49.900&  $ < $ 2e-16 \\
-%		experiment6&     0.489&   0.028901&  16.901&  $ < $ 2e-16 \\
-%		experiment7&     1.16&   0.028900&  40.196&  $ < $ 2e-16 \\
-%		experiment8&     1.84&   0.028900&  63.795&  $ < $ 2e-16 \\
-%		experiment9&    0.704&   0.028902&  24.354&  $ < $ 2e-16 \\
-%		experiment10&    1.59&   0.028902&  55.087&  $ < $ 2e-16 \\
-%		experiment11&    2.50&   0.028900&  39.275&  $ < $ 2e-16 \\
-%		experiment12&    1.14&   0.028903 & 39.275 & \(<\) 2e-16\\	
-%		experiment13&    2.10&   0.028902&  72.780&  $ < $ 2e-16 \\
-%		experiment14&    3.22&   0.028900& 111.393&  $ < $ 2e-16 \\
-%		experiment15&   -0.613&   0.028900& -21.205&  $ < $ 2e-16 
-%	\end{tabular}
-%\end{table}\noindent
+
 \end{document}
 
 
