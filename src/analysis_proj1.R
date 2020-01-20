@@ -228,13 +228,13 @@ ps <- c();
 par(mfrow = c(3, 4));
 for (i in 1:length(coordinates)) {
 	coor = coordinates[i];
-	print(coor);
 	s = subset(arm_dataframe, arm_dataframe$coordinate == coor);
-	model <- lm(s$pos ~ s$experiment * s$person);
+	model <- lm(s$pos ~ s$experiment + s$person);
 	an <- anova(model);
-	print(an)
 	ps <- c(ps, an$`Pr(>F)`[1]);
 	if ((i + 15) %% 25 == 0) {
+	  print(coor);
+	  print(an);
 		hist(model$residuals, main = paste("Model residuals for", `coor`), xlab = "Residual");
 	}
 }
@@ -244,9 +244,10 @@ plot(sorted, main = "Unadjusted, sorted p values", ylab = "p");
 adjusted <- p.adjust(sorted, method = "BH");
 plot(adjusted, main = "Adjusted, sorted p values", ylab = "p");
 alpha <- .05;
-print(mean(sorted > alpha));
-print(mean(adjusted > alpha));
-
+print(mean(sorted < alpha));
+print(mean(adjusted < alpha));
+print(sum(sorted < alpha));
+print(sum(adjusted < alpha));
 
 model <- lm(pos ~ experiment + coordinate + repetition + person);
 anova(model);
