@@ -221,11 +221,42 @@ arm_dataframe <- data.frame(
   experiment <- as.factor(experiment)
 )
 #Use last (control) experiment as reference
-levels(arm_dataframe$experiment) <-c(2:16, 1)
-  
-model <- lm(pos ~ experiment+coordinate + repetition + person);
+# levels(arm_dataframe$experiment) <-c(2:16, 1)
+
+options("max.print" = 100);
+ps <- c();
+par(mfrow = c(3, 4));
+for (i in 1:length(coordinates)) {
+	coor = coordinates[i];
+	s = subset(arm_dataframe, arm_dataframe$coordinate == coor);
+	model <- lm(s$pos ~ s$experiment + s$person);
+	an <- anova(model);
+	ps <- c(ps, an$`Pr(>F)`[1]);
+	if ((i + 15) %% 25 == 0) {
+	  print(coor);
+	  print(an);
+		hist(model$residuals, main = paste("Model residuals for", `coor`), xlab = "Residual");
+	}
+}
+par(mfrow = c(1, 2));
+sorted <- sort(ps);
+plot(sorted, main = "Unadjusted, sorted p values", ylab = "p");
+adjusted <- p.adjust(sorted, method = "BH");
+plot(adjusted, main = "Adjusted, sorted p values", ylab = "p");
+alpha <- .05;
+print(mean(sorted < alpha));
+print(mean(adjusted < alpha));
+print(sum(sorted < alpha));
+print(sum(adjusted < alpha));
+
+model <- lm(pos ~ experiment + coordinate + repetition + person);
 anova(model);
 summary(model);
+
+model <- lm(pos ~ experiment);
+anova(model);
+summary(model);
+
 
 par(mfrow = c(1, 2));
 hist(model$residuals, breaks = 100, main = "ANOVA residuals", xlab = "Residuals");
@@ -234,7 +265,7 @@ qqline(model$residuals);
 
 
 
-par(mfrow = c(1,1))
+par(mfrow = c(1, 1))
 plot(experiment[!is.na(pos)], model$residuals, 
      xlab = "Experiment no.",
      ylab = "Residuals")
