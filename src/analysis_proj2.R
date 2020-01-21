@@ -6,7 +6,6 @@ rm(list = ls());
 library("PerformanceAnalytics");
 load(file = "data/fosfor_data.Rdata");
 Phosphorous$location = as.factor(Phosphorous$location)
-Phosphorous
 summary(Phosphorous)
 levels(Phosphorous$location)
 

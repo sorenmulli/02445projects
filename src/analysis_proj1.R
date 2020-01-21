@@ -192,6 +192,8 @@ for (i in 1:300) {
 }
 
 raw_movement <- unlist(armdata, recursive = T);
+sum(is.na(raw_movement))
+
 coordinate <- rep(coordinates, 1600);
 coordinate <- rep(c(
    rep("x", 100),
