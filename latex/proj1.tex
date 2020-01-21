@@ -44,18 +44,8 @@
 %\tableofcontents
 \renewcommand{\abstractname}{Summary}
 
-\begin{figure}[H]
-	\centering
-	\subfloat{
-		\includegraphics[width=.66\linewidth]{p1_3d_example1}
-	}\\
-	\subfloat{
-		\includegraphics[width=.6\linewidth]{p1_3d_example2} 
-	}
-\end{figure}
-
-\newpage
-\setcounter{page}{1}-
+\clearpage
+\setcounter{page}{1}
 \begin{abstract}\noindent 
 Human arm movement data was examined with the goal of classifying the person based on their movement curve when performing a number of obstacle experiments.
 Classification of people performed by a 3 nearest neighbour classifier and a classification tree got respectively 60\pro\ and 41\pro\ accuracy and were both found to be signifiantly better than the baseline using McNemar's test.  
@@ -104,7 +94,16 @@ The target variable was the person who performed the movement, so the goal of ou
 Later, we tested wether or not the experiment had a significant effect.
 For this, we ravelled the data points into a vector of length $ 480,000 $ and used different subsets, which is explained in more details in section \ref{subsec:expeffect}. 36 of the 480,00 data points were missing values set to NA and ignored in the analyses.
 
-
+\begin{figure}[H]
+	\centering
+	\subfloat{
+		\includegraphics[width=.45\linewidth]{p1_3d_example1}
+	}\hfill
+	\subfloat{
+		\includegraphics[width=.45\linewidth]{p1_3d_example2} 
+	}
+	\caption{Plots of some arm movements from experiment two.}
+\end{figure}
 
 \section{Methods and analysis}
 
