@@ -10,7 +10,7 @@
 \usepackage[caption = false]{subfig}
 \usepackage{hyperref}
 
-\title{Course 02445 -- Project I\\Human Arm Trajectories in Obstacle Avoidance}
+\title{Course 02445 -- Project I\\Human Arm Trajectories in Obstacle Avoidance Tests}
 \author{Asger Laurits Schultz and Søren Winkel Holm\\s183912 and s183911}
 \date{\today}
 
@@ -79,7 +79,7 @@ All code is available in the \texttt{src} folder at \url{https://github.com/sore
 The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
 The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
 Thus, the data was structured in a $ 16\times 10\times 10 $ array, with axes: experiment\(\times\)person\(\times\)repetition.
-For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
+For every such repetition, the arm movement curve consisted of 100 $ x, y, $ and $ z $-coordinates such that the data for each repetition was a $ 100\times 3 $ matrix.
 The data had been preprocessed such that every curve was of the same length.
 Some of the movements are plotted in the title page figure  and figure \ref{fig:2dtrajects} where clear differences in the two first persons can be seen.
 
@@ -94,15 +94,15 @@ Some of the movements are plotted in the title page figure  and figure \ref{fig:
 		\centering
 		\includegraphics[width=.5\linewidth]{p1_example2}
 	}
-	\caption{Visualizations of the movement curves of the two first people. In the \(y\)-coordinate, a significant difference in movement pattern can be seen.}
+	\caption{Visualizations of the movement curves of the two first people. Especially in the \(y\)-coordinate, a difference in movement pattern can be seen.}
 	\label{fig:2dtrajects}
 \end{figure}\noindent 
-For our purposes, it was beneficial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
+For our purposes, it was beneficial to consider each recording of $ x, y, $ and $ z $ as a single feature, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
 For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
 The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
 
 Later, we tested wether or not the experiment had a significant effect.
-For this, we ravelled the data points into a vector of length $ 480,000 $ and used different subsets, which is explained in more details in section \ref{subsec:expeffect}.
+For this, we ravelled the data points into a vector of length $ 480,000 $ and used different subsets, which is explained in more details in section \ref{subsec:expeffect}. 36 of the 480,00 data points were missing values set to NA and ignored in the analyses.
 
 
 
@@ -111,12 +111,10 @@ For this, we ravelled the data points into a vector of length $ 480,000 $ and us
 
 \subsection{Machine Learning Task: Classification}
 Two machine learning models were chosen to test on this 300-dimensional 10-class data.
-It is noted from initial plots -- the title page figure and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear, such that models that can model nonlinear decision boundaries are considered.
-
-
+It is noted from initial plots -- the title page figure and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear (at least the differences in their movement curves do), such that models that can model nonlinear decision boundaries are considered.
 \paragraph{Models} The two chosen models were a binary classification tree and a 3-nearest neighbour classifier. The classification tree used the implementation of Hunt's algorithm of the \texttt{tree} package in \texttt{R} \cite{Tree}. For splitting criterion, the \textit{deviance} is used which is based on minus two times the log likelihood of the data under each model that the split results in \cite{Deviance}.
 
-The second model was the \(K\)-nearest neighbour classifier which predicts classes using \(K\) nearest data points in the training set in euclidean distance and tie breaking by increasing \(K\) for the data point. This was implemented in the \texttt{R} package \texttt{class} \cite{KNN}. Before training on the data set, the hyper parameters of both models were defined and were not subject for testing. \(K\) set to 3 as it was deemed suitable for the 10-class setting.
+The second model was the \(K\)-nearest neighbour classifier which predicts classes using \(K\) nearest data points in the training set in euclidean distance and tie breaking by increasing \(K\) for the data point. This was implemented in the \texttt{R} package \texttt{class} \cite{KNN}. Before training on the data set, the hyper parameters of both models were defined and were not subject for testing. \(K\) was set to 3 as it was deemed suitable for the 10-class setting.
 
 To evaluate the performance of the models, a classification baseline was set. As the classes are perfectly balanced, a baseline is expected to reach 10\pro\ accuracy. As no class is the largest, the baseline is constructed by randomly guessing classes to avoid skewing the evaluation towards any class as this might make a difference for the McNemar test.
 
@@ -278,21 +276,21 @@ It is seen that the expectation of some accuracy on the person classification ta
 The models were not tested for complexity controlling hyper parameters such as \(K\) for the KNN or the impurity function for the tree model and possible improvements could be found here. A larger improvement could be found in much more complex models for this high-dimensional data set such as random forests or deep neural networks. More generalizable performance could also be found by using the entire data set, not just experiment 4, to find more general personal  features and mannerisms.
 
 \subsection{Test of difference in experiments}
-As no data is a perfect representation of reality, under the null hypothesis, it would still be expected to find that $ 1\pro $ of the $ p $ values are significant at a $ 1\pro $ significance level. However, we found that, even after correcting the $ p $ values, 86\pro\ of them were significant at our significance level of $ 1\pro $.
+As no data is a perfect representation of reality, under the null hypothesis, it would still be expected to find that $ 1\pro $ of the non adjusted $ p $ values are significant at a $ 1\pro $ significance level. However, we found that, even after correcting the $ p $ values, 86\pro\ of them were significant at our significance level of $ 1\pro $.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.8\textwidth]{coordinate_ps}
 	\caption{Benjamini-Hochberg corrected $ p $ from the 300 ANOVA \(F\) tests divided based on their corresponding coordinate features.}\label{fig:unsortp}
 \end{figure}\noindent 
 It is noted with some surprise that the \(p\)-value adjustments had very little effect. This is connected to the high-variance \(p\)-value distribution which shows that most values are very close to 0 but a minority have dramatically higher \(p\)-values as can be seen in figures \ref{fig:sortp}, \ref{fig:unsortp}. To understand this distribution, figure \ref{fig:unsortp} shows the \(p\)-values sorted after the test's corresponding coordinate.  
-A common sense expectation is confirmed: The high \(p\)-values -- where the means of the experiments are very similar -- occur at the beginning and end of the coordinates as most experiments start and end in the same way. 
+A common sense expectation could explain this: The high \(p\)-values -- where the means of the experiments are very similar -- occur at the beginning and end of the coordinates as most experiments start and end in the same way. 
 Especially the \(y\) coordinate shows high \(p\) values in the end suggesting that the experiments are designed in a way where similar movements are needed in the \(y\)-direction in the end. 
 This sharp division of the tests is further amplified by numeric underflow as 19\pro\ of the \(p\)-values are below floating point precision and are coerced to 0.
 \\\\
 As the goal of the tests was to find if it was possible to distinguish the experiments from these tests, the null hypothesis can be rejected as this overwhelming amount of significant tests gives a high degree of evidence against the experiment being without effect on the curves.
 This conclusion is seen as significant even though some normality and independence assumptions are not fully tested as such convincing amount of evidence is found.
  
-The test method could be improved performing non-parametric tests which do not require normality, using feature-specific data transformations to help improve the normality of the residuals or including the repetition factor.
+The test method could be improved by performing non-parametric tests which do not require normality, using feature-specific data transformations to help improve the normality of the residuals or including the repetition factor.
 
 The experiment also had an effect in connection  with the person as the tests found significant effects of the interaction between these at \(72\pro\) of the tests though this on average explained much less of the variability than the other groups.
 

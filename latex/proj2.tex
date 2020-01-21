@@ -8,7 +8,7 @@
 \usepackage{float}
 \usepackage[caption = false]{subfig}
 
-\title{Course 02445 -- Project II\\Phosphate in Soil and the Effect on Barley Production}
+\title{Course 02445 -- Project II\\Modelling and Testing Phosphorous Effect on Barley Production }
 \author{Asger Laurits Schultz and Søren Winkel Holm\\s183912 and s183911}
 \date{\today}
 
@@ -46,7 +46,7 @@
 %\tableofcontents
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{dgt_mmm}
+	\includegraphics[width=.9\linewidth]{dgt_mmm}
 \end{figure}
 \newpage
 \setcounter{page}{1}
@@ -55,15 +55,15 @@
 %Farm yields depend on a large variety of factors including phosphate concentrations in the soil.
 \noindent
 Using data from nine fields in Denmark and Norway, the relationship between bioavailable phosphorous and the yield of barley agriculture was examined. 
-abilities to predict the yield from two different phosphorous measurement methods, Olsen-P and DGT, were compared by modelling using the Michaelis-Menten model. Here, the model errors were not found to be significantly difference ($ p=0.21 $) though the DGT measurement showed a better fit to the data.
-The impact of the bioavailable phosphorus on the yield was tested using the ANCOVA \(F\)-test which found bioavailable phosphorous to have a significant impact on the yield using both measurements at $ p=2\ctp{-10} $ for Olsen P and $ p=4\ctp{-13} $ for DGT5.
+The abilities to predict the yield from two different phosphorous measurement methods, Olsen-P and DGT, were compared by modelling using the Michaelis-Menten model. Here, the model errors were not found to be significantly difference ($ p=0.21 $) though the DGT measurement showed a better fit to the data.
+The impact of the bioavailable phosphorus on the yield was tested using the ANCOVA \(F\)-test which found bioavailable phosphorous to have a significant impact on the yield using both measurements at $ p=2\ctp{-10} $ for Olsen P and $ p=4\ctp{-13} $ for DGT.
 \end{abstract}
 
 
 \section{Introduction}
 A wide range of very different effects are in play in determining the output yield of a farm.
 As environmental and economic incentives rise, there is increasing motivation for precision agriculture which optimizes the performance of farming using ecological, chemical and biological variables.
-One of these important variables is the nutrient of the soil and \textit{phosphorous} is essential in this regard.
+One of these important variables is the nutrient of the soil and phosphorous is essential in this regard.
 
 
 This report considers different techniques for measuring the amount of phosphorous available to the plants and compares two measurement methods, the traditional "Olsen-P" and the newer "DGT" method, using the output yield of barley fields as the target.  
@@ -72,7 +72,7 @@ Correlations, model fitting of Michaelis-Menten models and ANCOVA models are use
 All code is available in the \texttt{src} folder at \url{https://github.com/sorenmulli/02445projects}.
 
 \section{Data}
-The data consists of 100 observations each consisting continuous  Olsen-P measurements [mg/100g], DGT-measurements [\(\mu\)g/L] and harvest yield of barley [hkg/ha] and categorical location id's for the field on which the observations were made. Nine fields have been surveyed and given id's from "001" to "011". The last field has missing values for two of it's three yield measurements.  
+The data consists of 36 observations each consisting of continuous  Olsen-P measurements [mg/100g], DGT-measurements [\(\mu\)g/L] and harvest yield of barley [hkg/ha] and categorical location id's for the field on which the observations were made. Nine fields have been surveyed and given id's from "001" to "011". The last field has missing values for two of it's three yield measurements.  
 
 The fields are from Denmark and Norway and the multiple measurements of yield from each field correspond to division of the fields into plots from which soil samples were taken and later barley output was recorded such that these measurements cannot be considered independent which is visualized in figure \ref{fig:fieldbox}. Further visualization of the data is given in the results section where scatter plots are supplied.
 \begin{figure}[H]
@@ -85,15 +85,15 @@ The fields are from Denmark and Norway and the multiple measurements of yield fr
 \subsection{Recommended measure}
 Without access to a verifiable measurement of bioavailable phosphorous, the measurement methods are evaluated based on their ability to explain, and thus, predict the yield of the field. 
 
-As an initial examination, the correlation between yield output and each phosphorous measurement is found and visualized to account for linear relationships. The correlation between the two measurements is also included together with visualizations of the significance of the correlations.
+As an initial examination, the correlation between yield output and each phosphorous measurement is found and visualized to account for linear relationships. The correlation between the two measurements is also included together with visualizations of the evidence for these correlations.
 
-To test which measurement predicts the barley yield best beyond linear tendencies, Michaelis-Menten models are used. The nonlinear model is connected to the reaction velocity of enzymes such as nutrients \cite{michment} and assumes that:
+To test which measurement predicts the barley yield best beyond linear tendencies, Michaelis-Menten models are used. The nonlinear model is connected to the reaction velocity of enzymes such as nutrients \cite{michment} and assumes for the yield \(y\) and the explanatory measurements \(x\) that:
 \[
 y = \frac{\alpha x}{\beta + x}, x >0
 \]
-This nonlinear model is fitted using the yield as target variable and both DGT measurements and Olsen P-measurements as explanatory variables by the R function \texttt{nls} which iteratively fits the parameters using a squared loss criterion.  To estimate the generalization error of each model, leave-one-out cross-validation over the fields is performed by fitting the models to eight out of the nine and evaluating them on the last for all fields. The starting guesses for each model is kept constant.
+The model parameters \(\alpha, \beta\) of nonlinear model are fitted using the yield as target variable and first the DGT measurements and then the Olsen P-measurements as explanatory variables using the R function \texttt{nls} which iteratively fits the parameters using a squared loss criterion.  To estimate the generalization loss of each model, leave-one-out cross-validation over the fields is performed by fitting the models to eight out of the nine and evaluating them on the last for all fields. The starting guesses for each model is kept constant.
 
-From this, estimates of the two model's generalization errors as the mean squared error loss are found and these are compared with a $t$ test on test errors of the nine folds to evaluate the evidence for the hypothesis that modelling using one measurement technique is better than using the other.
+From this, estimates of the two models' mean squared generalization error are found and these are compared with a two-sample, paired, $t$-test on test errors of the nine folds to evaluate the evidence for the hypothesis that modelling using one measurement technique is better than using the other.
 \subsection{Yield influence of bioavailable phosphorous}
 To test whether there is a significant effect of bioavailable phosphorous on the barley yield, ANCOVA models of the following form is evaluated:
 \[
@@ -162,14 +162,14 @@ The slopes for the ANCOVA models and their std. errors are estimated to:
 	&&\hat \beta_{olsenP}= 25,\ \ \hat \sigma_{\beta_{dgt}}=1.3
 \end{align*}
 \section{Discussion}
-\paragraph{Validity of statistical analyses} The assumptions of \(t\) test of independence and normality are considered as partly satisfied as the experiment setup is assumed to supply independence between the fields but the normality of the paired test is somewhat more doubtful with the outliers shown in the quantile-quantile on figure \ref{fig:qq}. Also, with only nine data points used for the test, the $ t $ test should by no means be taken as an absolute truth.
+\paragraph{Validity of statistical analyses} The assumptions of \(t\)-test of independence and normality are considered only as partly satisfied as the experiment setup is assumed to supply independence between the fields but the normality of the paired test is somewhat more doubtful with the outliers shown in the quantile-quantile on figure \ref{fig:qq}. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.5\linewidth]{p2_t_qq}
 	\label{fig:tqq}
 	\caption{Quantiles/quantile plot of the differences in \(MSE\) used to check for normality of the the paired $t$ test. Two left-skewing outliers problematize the normal assumption.}\label{fig:qq}
 \end{figure} \noindent 
-For the ANCOVA, the assumption of linears effects is doubtful as the Michaelis-Menten nonlinear model fits better to the data than linear models. The assumption of variance homogeneity can neither be confirmed with some of the fields having lower variance though this beyond conclusion with just 2-4 data points for each field. The normality assumption seems reasonable based on below plots bar some askewness.
+For the ANCOVA, the assumption of the data only containing linear effects is doubtful as the Michaelis-Menten nonlinear model fits better to the data than linear models. The assumption of variance homogeneity can neither be confirmed with some of the fields having lower variance though this is beyond conclusion with just 2-4 data points for each field. The normality assumption seems reasonable based on below plots bar some askewness.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.75\linewidth]{p2_ancova_qq}
@@ -177,7 +177,7 @@ For the ANCOVA, the assumption of linears effects is doubtful as the Michaelis-M
 	\caption{Quantiles/quantile plot of ANCOVA residuals and boxplot of field group residuals. Note that these plots are the same for both ANCOVA models as the only one DGT and one Olsen P measurement has been made for each field.}
 \end{figure} \noindent 
 \paragraph{Statistical conclusions} The estimates of the generalization errors of the Michaelis-Menten models implied a clear edge of the DGT measurement in terms of explanatory power. 
-However, due to the \(t\)-test returning \(p=0.21\) and not being completely validated, the statistical evidence for this edge to be significant is minor or non-existant. This could be further tested with a non-parametric rank-sum test but it is suspected that no significant evidence can be found of this difference without more data.
+However, due to the \(t\)-test returning \(p=0.21\) and not being completely validated, the statistical evidence for this edge to be significant is non-existant or very minor. This could be further tested with a non-parametric rank-sum test but it is suspected that no significant evidence can be found of this difference without more data.
 
 The ANCOVA proves more convincingly the simple fact that both measurements have significant effects on the barley yield with very low \(p\)-values. 
 Though they cannot be interpreted directly as risk of type I-errors due to limited fulfilment of assumptions, the \(p\)-values are seen as high degree of evidence for the effect of the bioavailable phosphorous.
@@ -186,11 +186,11 @@ Though they cannot be interpreted directly as risk of type I-errors due to limit
 This is supported by the ANCOVA conclusions, the correlations of 0.36 and 0.46 and the Michaelis-Menten models' explanatory power which is considered as an approximation of the true enzymological, generative story \cite{michment}. 
 This of course, does not prove that the bioavailable phoshorous \textit{causes} the higher yield, though this is suspected due to the role of phosphorous in nutrients and the Michaelis-Menten model is recommended as a possible model for this effect which can help farmers plan the crop rotation and choice of farming land.
 
-It was ultimately not proven that the newer DGT measurement predicts the yield better than the cheaper Olsen P-measurement but a number of indicia were found which give some evidence for this: The DGT measurement had the highest correlation with the yield, the DGT Michaelis-Menten model fitted better to the data and the DGT measurement explained a higher amount of the variance in the ANCOVA models than the Olsen-P measurement did.
+It was ultimately not proven that the newer DGT measurement predicts the yield better than the cheaper Olsen P-measurement but a number of indicia were found which give some indication of this: The DGT measurement had the highest correlation with the yield, the DGT Michaelis-Menten model fitted better to the data and the DGT measurement explained a higher amount of the variance in the ANCOVA models than the Olsen-P measurement did.
 Based on this, collection of more data is suggested and it is recommended for farmers to use the DGT measurement if the economic loss of this is minor. 
 
 On the other hand, the correlation between the measurement techniques was found to be 88\pro\ so a major investment in the new technique cannot be justified based on this evidence. 
-An important factor in the hinted, higher predictive power of the DGT measurement was field 11 which had the lowest yield and can be seen as the outlier in the figures \ref{fig:fieldbox}, \ref{fig:tqq} and in figure \ref{fig:yield_bio} it is clear that the model based on DGT-measurements explains this field (points in light grey) much better. 
+An important factor in the hinted, higher predictive power of the DGT measurement was field 11 which had the lowest yield and can be seen as the outlier in the figures \ref{fig:fieldbox}, \ref{fig:tqq} and in figure \ref{fig:yield_bio} and it is clear that the model based on DGT-measurements explains this outlier field (points in light grey) much better. 
 If the data corresponds well to the general field distribution and the Michealis-Menten model is a good approximation of the generative story, a heuristic can be formed that the DGT-technique should be used on low-yield fields. 
 On the other hand, if field 11 is seen as an outlier which should be excluded from the models (an idea somewhat supported by the two NA's in the four yield measurements from field 11), then the evidence for the advantage of DGT shrinks considerably.
 
