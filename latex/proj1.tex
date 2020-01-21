@@ -71,7 +71,7 @@ The size and weight of the cylinders varied over the experiments, and each perso
 Thus, the data was structured in a $ 16\times 10\times 10 $ array, with axes: experiment\(\times\)person\(\times\)repetition.
 For every such repetition, the arm movement curve consisted of 100 $ x, y, $ and $ z $-coordinates such that the data for each repetition was a $ 100\times 3 $ matrix.
 The data had been preprocessed such that every curve was of the same length.
-Some of the movements are plotted in the title page figure  and figure \ref{fig:2dtrajects} where clear differences in the two first persons can be seen.
+Some of the movements are plotted in figures \ref{fig:trajects}, \ref{fig:2dtrajects} where clear differences in the two first persons can be seen.
 
 
 \begin{figure}[H]
@@ -102,7 +102,7 @@ For this, we ravelled the data points into a vector of length $ 480,000 $ and us
 	\subfloat{
 		\includegraphics[width=.45\linewidth]{p1_3d_example2} 
 	}
-	\caption{Plots of some arm movements from experiment two.}
+	\caption{Plots of some arm movements from experiment two.}\label{fig:trajects}
 \end{figure}
 
 \section{Methods and analysis}
@@ -110,7 +110,7 @@ For this, we ravelled the data points into a vector of length $ 480,000 $ and us
 
 \subsection{Machine Learning Task: Classification}
 Two machine learning models were chosen to test on this 300-dimensional 10-class data.
-It is noted from initial plots -- the title page figure and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear (at least the differences in their movement curves do), such that models that can model nonlinear decision boundaries are considered.
+It is noted from initial plots -- figures \ref{fig:trajects}, \ref{fig:2dtrajects} -- that the effects of different people seem non-linear (at least the differences in their movement curves do), such that models that can model nonlinear decision boundaries are considered.
 \paragraph{Models} The two chosen models were a binary classification tree and a 3-nearest neighbour classifier. The classification tree used the implementation of Hunt's algorithm of the \texttt{tree} package in \texttt{R} \cite{Tree}. For splitting criterion, the \textit{deviance} is used which is based on minus two times the log likelihood of the data under each model that the split results in \cite{Deviance}.
 
 The second model was the \(K\)-nearest neighbour classifier which predicts classes using \(K\) nearest data points in the training set in euclidean distance and tie breaking by increasing \(K\) for the data point. This was implemented in the \texttt{R} package \texttt{class} \cite{KNN}. Before training on the data set, the hyper parameters of both models were defined and were not subject for testing. \(K\) was set to 3 as it was deemed suitable for the 10-class setting.
