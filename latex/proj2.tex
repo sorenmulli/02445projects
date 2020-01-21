@@ -44,13 +44,21 @@
 %-- By the explanatory strengths of the two measurements, the DGT measurement is found to be most useful in predicting the yield.
 %-- Bioavailable phosphorous is using both measurements found to have significant effect on the yield \(p<10^{-9}\).
 %\tableofcontents
-\renewcommand{\abstractname}{Summary}
-\begin{abstract}
-	Farm yields depend on a large variety of factors including phosphate concentrations in the soil. Using data from nine fields in Denmark and Norway, we attempt to answer two questions: Is there a statistically significant difference between the predictive abilities of data from different measurement methods (Olsen P and DGT), and does the amount of bioavailable phosphorus impact the yield? We use both linear models and the Michaelis-Menten model are used to model the yield as a function of the phosphate availability, and their errors are compared using $ t $ test. We use ANCOVA to test for a significant impact on harvest yield. We find that the DGT measurements have more explanatory power, though not enough to be statisticallly significant ($ p=0.21 $). The ANCOVA shows that the amount of phosphate impacts the harvest yields ($ p=2\ctp{-10} $ for Olsen P and $ p=4\ctp{-13} $ for DGT), though the model assumptions are only somewhat fulfilled.
-\end{abstract}
-\clearpage
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{dgt_mmm}
+\end{figure}
 \newpage
 \setcounter{page}{1}
+\renewcommand{\abstractname}{Summary}
+\begin{abstract}
+%Farm yields depend on a large variety of factors including phosphate concentrations in the soil.
+\noindent
+Using data from nine fields in Denmark and Norway, the relationship between bioavailable phosphorous and the yield of barley agriculture was examined. 
+abilities to predict the yield from two different phosphorous measurement methods, Olsen-P and DGT, were compared by modelling using the Michaelis-Menten model. Here, the model errors were not found to be significantly difference ($ p=0.21 $) though the DGT measurement showed a better fit to the data.
+The impact of the bioavailable phosphorus on the yield was tested using the ANCOVA \(F\)-test which found bioavailable phosphorous to have a significant impact on the yield using both measurements at $ p=2\ctp{-10} $ for Olsen P and $ p=4\ctp{-13} $ for DGT5.
+\end{abstract}
+
 
 \section{Introduction}
 A wide range of very different effects are in play in determining the output yield of a farm.
@@ -61,7 +69,7 @@ One of these important variables is the nutrient of the soil and \textit{phospho
 This report considers different techniques for measuring the amount of phosphorous available to the plants and compares two measurement methods, the traditional "Olsen-P" and the newer "DGT" method, using the output yield of barley fields as the target.  
 Correlations, model fitting of Michaelis-Menten models and ANCOVA models are used to examine the connections between the measurements and the yield output.
 
-All code is available in the \texttt{src} folder at \url{https://github.com/sorenmulli/02445projects.git}.
+All code is available in the \texttt{src} folder at \url{https://github.com/sorenmulli/02445projects}.
 
 \section{Data}
 The data consists of 100 observations each consisting continuous  Olsen-P measurements [mg/100g], DGT-measurements [\(\mu\)g/L] and harvest yield of barley [hkg/ha] and categorical location id's for the field on which the observations were made. Nine fields have been surveyed and given id's from "001" to "011". The last field has missing values for two of it's three yield measurements.  
@@ -95,7 +103,7 @@ where \(y\) is the barley yield and two models are evalued with \(x\) being the 
 \section{Results}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{p2_corrplot}
+	\includegraphics[width=.7\linewidth]{p2_corrplot}
 	\caption{Scatter plots with rolling averages and correlations between the three continous variables. Asterisks are loose indications\protect\footnotemark\ of amount of evidence for the hypothesis that the correlation \(\neq 0\).}
 \end{figure}
 \footnotetext{They are computed with \texttt{corr.test} but the assumptions for these to count as \(p\) values (where one asterisk corresponds to \(\alpha = 0.05\) and so forth) are not fulfilled as the data points are not independent}

@@ -193,12 +193,12 @@ for (i in 1:300) {
 
 raw_movement <- unlist(armdata, recursive = T);
 coordinate <- rep(coordinates, 1600);
-# coordinate <- rep(c(
-#   rep("x", 100),
-#   rep("y", 100),
-#   rep("z", 100)),
-#   1600
-# )
+coordinate <- rep(c(
+   rep("x", 100),
+   rep("y", 100),
+   rep("z", 100)),
+   1600
+ )
 repetition <- c()
 person <- c()
 experiment <- c()
@@ -292,7 +292,6 @@ plot(adjusted, main = "Adjusted, sorted p values", ylab = "p");
 alpha <- .01;
 print(mean(sorted < alpha));
 print(mean(adjusted < alpha));
-
 print(sum(sorted < alpha));
 print(sum(adjusted < alpha));
 
@@ -301,6 +300,10 @@ mean(p.adjust(person_ps, method = "BH") < alpha);
 sum(person_ps < alpha);
 sum(p.adjust(person_ps, method = "BH") < alpha);
 
+print(mean(ps == 0))
+
+print(mean(person_ps == 0))
+mean(person_ps)
 
 mean(inter_ps < alpha);
 mean(p.adjust(inter_ps, method = "BH") < alpha);
@@ -337,7 +340,6 @@ plot(experiment[!is.na(pos)], model$residuals,
 plot(person[!is.na(pos)], model$residuals, 
      xlab = "Person no.",
      ylab = "Residuals")
-
 
 
 

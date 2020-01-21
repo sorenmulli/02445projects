@@ -43,44 +43,60 @@
 %\tableofcontents
 %\tableofcontents
 \renewcommand{\abstractname}{Summary}
-\begin{abstract}
-yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda yadda 
-\end{abstract}
-\clearpage
+
+\begin{figure}[H]
+	\centering
+	\subfloat{
+		\includegraphics[width=.66\linewidth]{p1_3d_example1}
+	}\\
+	\subfloat{
+		\includegraphics[width=.6\linewidth]{p1_3d_example2} 
+	}
+\end{figure}
+
 \newpage
-\setcounter{page}{1}
+\setcounter{page}{1}-
+\begin{abstract}\noindent 
+Human arm movement data was examined with the goal of classifying the person based on their movement curve when performing a number of obstacle experiments.
+Classification of people performed by a 3 nearest neighbour classifier and a classification tree got respectively 60\pro\ and 41\pro\ accuracy and were both found to be signifiantly better than the baseline using McNemar's test.  
+Furthermore, it was tested whether the object movement task had significant effect on the  curves using 300 ANOVA corresponding to each coordinate feature. 
+After adjustment, this effect of experiment was found to be significant at \(\alpha=0.01\) for 86\pro\ of the features.
+\end{abstract}
+
 
 
 \section{Introduction}
 The field of artificial intelligence and machine learning is known for recognising patterns in high-dimensional data. 
-One application of such modelling is in human identification as facial recognition and biometric scanning are becoming a large part of our every day for better and for worse. One, more subtle identifier is our bodily movement which can be imagined to vary between people.
+One application of such modelling is in human identification, as facial recognition and biometric scanning are becoming a large part of our every day for better and for worse. One, more subtle identifier is our bodily movement which can be imagined to vary between people.
 
 It is thus an obvious question whether the difference in movement between people is enough to identify them. Achieving accurate modelling and a good understanding of such motor data might help fields such kinesiology and biomechanics and be applied in health and sport \cite{kine}.
 
-Two simple machine learning models, a classification tree and a 3-nearest neighbour classifier, are tested on this human classification task in a single arm movement experiment where subects moved cylinders of different sizes and weights over obstacles. Furthermore, a statistical test is performed on 16 arm movement experiments to test whether the type of task was signficantly different.
+Two simple machine learning models, a classification tree and a 3-nearest neighbour classifier, are tested on this human classification task in a single arm movement experiment where subjects moved cylinders of different sizes and weights over obstacles. Furthermore, a statistical test is performed on 16 arm movement experiments to test whether the type of task was signficantly different.
 
-All code is available in the \texttt{src} folder at \url{https://github.com/sorenmulli/02445projects.git}.
+All code is available in the \texttt{src} folder at \url{https://github.com/sorenmulli/02445projects}.
 
 \section{Data}
-\begin{figure}[H]
-	\centering
-	\subfloat{
-		\includegraphics[width=.5\linewidth]{p1_3d_example1}
-	}
-	\subfloat{
-		\centering
-		\includegraphics[width=.5\linewidth]{p1_3d_example2}
-	}
-	\label{fig:trajects}
-	\caption{Hand movements of two different people in the fourth experiment.}
-\end{figure}
 The data consists of 16 experiments where ten right-handed people had to move a cylinder over another cylinder.
 The size and weight of the cylinders varied over the experiments, and each person had to perform the movement of each experiment 10 times.
 Thus, the data was structured in a $ 16\times 10\times 10 $ array, with axes: experiment\(\times\)person\(\times\)repetition.
 For every such repetition, the $ x, y, $ and $ z $ coordinates of the movement where recorded 100 times, such that the data for each repetition was a $ 100\times 3 $ matrix.
 The data had been preprocessed such that every curve was of the same length.
-Some of the movements are plotted in figure \ref{fig:trajects}.
+Some of the movements are plotted in the title page figure  and figure \ref{fig:2dtrajects} where clear differences in the two first persons can be seen.
 
+
+\begin{figure}[H]
+	
+	\centering
+	\subfloat{
+		\includegraphics[width=.5\linewidth]{p1_example}
+	}
+	\subfloat{
+		\centering
+		\includegraphics[width=.5\linewidth]{p1_example2}
+	}
+	\caption{Visualizations of the movement curves of the two first people. In the \(y\)-coordinate, a significant difference in movement pattern can be seen.}
+	\label{fig:2dtrajects}
+\end{figure}\noindent 
 For our purposes, it was beneficial to consider each recording of $ x, y, $ and $ z $ a set of three features, so we ravelled the data such that each repetition had $ 300 $ features with one observation each.
 For the first part of the report, we investigated only experiment 4, so we had a total of 100 observations.
 The target variable was the person who performed the movement, so the goal of our machine learning models was a 10-class classification.
@@ -95,18 +111,18 @@ For this, we ravelled the data points into a vector of length $ 480,000 $ and us
 
 \subsection{Machine Learning Task: Classification}
 Two machine learning models were chosen to test on this 300-dimensional 10-class data.
-It is noted from initial plots -- fig. \ref{fig:trajects} and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear, such that models that can model nonlinear decision boundaries are considered.
+It is noted from initial plots -- the title page figure and fig. \ref{fig:2dtrajects} -- that the effects of different people seem non-linear, such that models that can model nonlinear decision boundaries are considered.
 
 
 \paragraph{Models} The two chosen models were a binary classification tree and a 3-nearest neighbour classifier. The classification tree used the implementation of Hunt's algorithm of the \texttt{tree} package in \texttt{R} \cite{Tree}. For splitting criterion, the \textit{deviance} is used which is based on minus two times the log likelihood of the data under each model that the split results in \cite{Deviance}.
 
-The second model was the \(K\)-nearest neighbour classifier which predicts classes using \(K\) nearest data points in the training set in euclidean distance and tie breaking by increasing \(K\) for the data point as implemented in the \texttt{R} package \texttt{class} \cite{KNN}. Before training on the data set, the hyper parameters of both models were defined and were not subject for testing. \(K\) set to 3 as it was deemed suitable for the 10-class setting.
+The second model was the \(K\)-nearest neighbour classifier which predicts classes using \(K\) nearest data points in the training set in euclidean distance and tie breaking by increasing \(K\) for the data point. This was implemented in the \texttt{R} package \texttt{class} \cite{KNN}. Before training on the data set, the hyper parameters of both models were defined and were not subject for testing. \(K\) set to 3 as it was deemed suitable for the 10-class setting.
 
 To evaluate the performance of the models, a classification baseline was set. As the classes are perfectly balanced, a baseline is expected to reach 10\pro\ accuracy. As no class is the largest, the baseline is constructed by randomly guessing classes to avoid skewing the evaluation towards any class as this might make a difference for the McNemar test.
 
 
 \paragraph{Performance evaluation}
-To evaluate which machine learning model best predicts which person completed the tasks, leave-one-out cross validation is implemented thus training the models on 99 data points and and testing on the last for each fold.
+To evaluate which machine learning model best predicts the person completing the tasks, leave-one-out cross validation is implemented thus training the models on 99 data points and and testing on the last for each fold.
 From here, 100 predictions are obtained which are used to achieve a point estimate for the accuracy of the classifiers.
 
 To test whether the differences in the accuracy estimates are significant, McNemar's test is used. 
@@ -115,20 +131,20 @@ From this test, a \(p\)-value for the null hypothesis that the two classifiers h
 
 These tests consider the matched-pair matrix which counts the number of times the classifiers both are wrong, the number of times they both are right, the number of times one is better than the other (\(n_{12}\)) and vice versa (\(n_{21}\)).
 Intuitively, this takes into account that some classifications might be more difficult than others. 
-This is the motivation for the random baseline.
+This is the motivation for the baseline consisting of random guesses.
 
 
 \subsection{Test of experiment effect}\label{subsec:expeffect}
-Analysis of Variance, ANOVA, is used to compare the mean positional values between the groupings in the data with focus on detecting if there is a significant difference between the experiments.
-This test of whether the overall mean is due to random variation using variability decomposition is done on a linear, two-way, additive model:
+Analysis of Variance, ANOVA, is used to compare the mean positional values between the factors in the data with focus on detecting if there is a significant difference between the experiments.
+This test of whether the overall mean is due to random variation using variability decomposition is done on a linear, two-way, multiplicative model:
 \[
 	y_{ij} = \alpha_{\text{experiment } i}+
 	\beta_{\text{person } j}+ 
 	\gamma_{\text{experiment } i \times\text{person } j }
 	+ \epsilon_{ijkl}, \quad \epsilon_{ij} \sim \mathcal N (0, \sigma^2)
 \]
-The null hypothesis which was the focus of the test was $ H_0: \alpha_1=\alpha_2=\ldots=\alpha_{16} $ but the person was included to strengthen the test by taking the variance within this group into account and to assure that the data points were independent. 
-The multiplicative model was used to capture the entity of the effects in the data and avoid the observations being non-independent.
+The null hypothesis which was the focus of the test was $ H_0: \alpha_1=\alpha_2=\ldots=\alpha_{16} $ but the person was included to strengthen the test by taking the variance within this group into account and to fortify the assumption of independence. 
+The interactions were included in the model to capture the entirety of the effects in the data and avoid the observations being non-independent.
 
 Because ANOVA compares the means of different groups, it is relevant to compare the effect of the experiments one feature at a time.
 We therefore ravelled all 480,000 data points in to a vector, and split them into subsets of $ 1,600 $ data points, each corresponding to one of the $ 300 $ coordinate features.
@@ -200,7 +216,7 @@ Estimate for accuracy difference, 99\pro\ confidence interval and \(p\)-value fo
 \]
 
 \subsection{Impact of experiment}
-The results of the 300 two-way ANOVA's is given below. With \(N\) sign. tests is meant the amount of tests significant at \(\alpha = 0.01\). BH is referring to the Benjamini-Hochberg adjustment to account for the 300 tests. The \(\overline{ MSE}\) is computed as the average of the 300 MSE's
+The results of the 300 two-way ANOVA's is given below. With \(N\) sign. tests is meant the amount of tests significant at \(\alpha = 0.01\). BH is referring to the Benjamini-Hochberg adjustment to account for the 300 tests. The \(\overline{ MSE}\) is computed as the average of the 300 MSE's.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{l | c c c c}
@@ -213,7 +229,7 @@ The results of the 300 two-way ANOVA's is given below. With \(N\) sign. tests is
 	\end{tabular}
 	\label{tab:ranova}
 \end{table}\noindent
-The distribution of \(p\)-values of the experiment can be seen in the below on figure \ref{fig:sortp}.
+The distribution of \(p\)-values of the experiment can be seen below in figure \ref{fig:sortp}.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.8\textwidth]{pvalues}
@@ -222,21 +238,19 @@ The distribution of \(p\)-values of the experiment can be seen in the below on f
 
 \section{Discussion and Conclusion}
 \paragraph{Validity of statistical analyses}
-The parametric McNemar test is noted to be an approximation from asymptotic theory and \cite{Tue} states that the \(p\) values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\). This is seen to hold for all the matrices (the sums being 31, 58 and 49 for the comparisons) such that the results of the McNemar comparisons are seen as accurate.
-
-
-For the 300 two-way ANOVA's, it is challenging to visualize the important assumptions of residual normality and residual variance homogeneity. An arbitrary subset of the 300 tests is thus chosen and visualized. Below, figure \ref{fig:qq} substantiates the assumption of normality as only minor outliers and non-normal tendencies can be seen. These residual populations are also visualized as histograms in the appendix, figure \ref{fig:residuals}.
-
-The assumption of variance homogeneity for the \textit{experiment} factors is in the same vein visualized by boxplots of these same 12 coordinate features. 
-From this (somewhat overwhelming) plot at figure \ref{fig:vars}, the assumptions seem reasonably well fulfilled at the given zoom level as only few of these coordinate tests have experiment levels with visibly differing variance.  
-The assumption that the errors are regarded as fulfilled between the groups of experiments and people, but the repetition number was not included in the ANOVA such that this could be a source of unmodelled grouping of the data. 
-For further work these two-way ANOVA could be expanded to three-way to include this variation even though it is not expected to explain a large portion of the variability in the positional data.
-
+The parametric McNemar test is noted to be an approximation from asymptotic theory and the source \cite{Tue} states that the \(p\) values and confidence intervals should be considered together and that they only hold when \(n_{12}+n_{21}> 5\). This is seen to hold for all the matrices (the sums being 31, 58 and 49 for the comparisons) such that the results of the McNemar comparisons are seen as accurate.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.9\textwidth]{qq}
 	\caption{Quantile/quantile-plots of the residuals of twelve of the 300 ANOVA models. Major problems are only seen in the bottom rightmost.}\label{fig:qq}
 \end{figure}\noindent
+For the 300 two-way ANOVA's, it is challenging to visualize the important assumptions of residual normality and residual variance homogeneity. An arbitrary subset of the 300 tests is thus chosen and visualized. Figure \ref{fig:qq} substantiates the assumption of normality as only minor outliers and non-normal tendencies can be seen. These residual populations are also visualized as histograms in the appendix, figure \ref{fig:residuals}.
+
+The assumption of variance homogeneity for the \textit{experiment} factors is in the same vein visualized by boxplots of these same 12 coordinate features. 
+From this (somewhat overwhelming) plot at figure \ref{fig:vars}, the assumptions seem reasonably well fulfilled at the given zoom level as only few of these coordinate tests have experiment levels with visibly differing variance.  
+The assumption of independence of the errors is regarded as fulfilled between the groups of experiments and people, but the repetition number was not included in the ANOVA such that this could be a source of unmodelled grouping of the data though it should not be a significant factor in a well designed experiment. 
+
+
 For this large amount of tests, the assumptions in each are not fully tested. 
 Thus, to achieve precise measurements of number of significant tests, the model validation should include  full investigation of residual distribution including search for nonlinear effects in the tests.
 Furthermore, examinations of variance homogeneity with regards to the \textit{person} factors and the interactions should be carried out. 
@@ -257,7 +271,7 @@ Furthermore, examinations of variance homogeneity with regards to the \textit{pe
 
 \subsection{Classification of persons}
 %The initial visualizations of the data in the 3D and 2D scatter plots -- \ref{fig:trajects} and \ref{fig:2dtrajects} -- showed clear differences between the repetitions of the first two people that humans would be able to classify visually especially it is seen that there is a clear difference in the way these two people move in the \(y\)-direction.  
-It is seen that the expectation of some accuracy was confirmed: The 3-nearest neighbour model is the best at 60\pro\ and is significantly better than the classification tree and they are both significantly better than the random guesses. The greater aim of reliably discerning people based on movement is far from achieved at an performance of 60\pro. However, this significant result with these un-optimized models shows a promise for the machine learning task as there is a number of possible improvements. 
+It is seen that the expectation of some accuracy on the person classification task was confirmed: The 3-nearest neighbour model is the best at 60\pro\ and is significantly better than the classification tree and they are both significantly better than the random guesses. The greater aim of reliably discerning people based on movement is far from achieved at an performance of 60\pro. However, this significant result with these un-optimized models shows a promise for the machine learning task as there is a number of possible improvements. 
 
 
 
@@ -267,20 +281,20 @@ The models were not tested for complexity controlling hyper parameters such as \
 As no data is a perfect representation of reality, under the null hypothesis, it would still be expected to find that $ 1\pro $ of the $ p $ values are significant at a $ 1\pro $ significance level. However, we found that, even after correcting the $ p $ values, 86\pro\ of them were significant at our significance level of $ 1\pro $.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.9\textwidth]{coordinate_ps}
+	\includegraphics[width=.8\textwidth]{coordinate_ps}
 	\caption{Benjamini-Hochberg corrected $ p $ from the 300 ANOVA \(F\) tests divided based on their corresponding coordinate features.}\label{fig:unsortp}
 \end{figure}\noindent 
 It is noted with some surprise that the \(p\)-value adjustments had very little effect. This is connected to the high-variance \(p\)-value distribution which shows that most values are very close to 0 but a minority have dramatically higher \(p\)-values as can be seen in figures \ref{fig:sortp}, \ref{fig:unsortp}. To understand this distribution, figure \ref{fig:unsortp} shows the \(p\)-values sorted after the test's corresponding coordinate.  
 A common sense expectation is confirmed: The high \(p\)-values -- where the means of the experiments are very similar -- occur at the beginning and end of the coordinates as most experiments start and end in the same way. 
 Especially the \(y\) coordinate shows high \(p\) values in the end suggesting that the experiments are designed in a way where similar movements are needed in the \(y\)-direction in the end. 
-This sharp division of the tests is further amplified by numeric underflow as 19\pro of the \(p\)-values are below float precision and are coerced to 0.
+This sharp division of the tests is further amplified by numeric underflow as 19\pro\ of the \(p\)-values are below floating point precision and are coerced to 0.
 \\\\
-As the goal of the test was to find if it was possible to distinguish the experiments from these tests, the null hypothesis can be rejected as this overwhelming amount of significant tests gives a high of evidence against the experiment being without effect of the curves.
+As the goal of the tests was to find if it was possible to distinguish the experiments from these tests, the null hypothesis can be rejected as this overwhelming amount of significant tests gives a high degree of evidence against the experiment being without effect on the curves.
 This conclusion is seen as significant even though some normality and independence assumptions are not fully tested as such convincing amount of evidence is found.
  
-The test method could be improved by including the repetition factor, performing non-parametric tests which do not require normality or using feature-specific data transformations to help improve the normality of the residuals.
+The test method could be improved performing non-parametric tests which do not require normality, using feature-specific data transformations to help improve the normality of the residuals or including the repetition factor.
 
-The experiment also had an effect in connection with the person: The tests also found significant effects of the interaction between the experiment and the people at \(72\pro\) of the tests though this on average explained much less of the variability than the other groups.
+The experiment also had an effect in connection  with the person as the tests found significant effects of the interaction between these at \(72\pro\) of the tests though this on average explained much less of the variability than the other groups.
 
 The \textit{person} factor was found to have significant differences on every one of the 300 tests. Person-to-person variability in arm movement is thus so high that differences between these 10 people can be found in every coordinate -- a result which gives further credence to the possibility of success in the human movement classification task.
 
@@ -302,38 +316,25 @@ The \textit{person} factor was found to have significant differences on every on
 
 \newpage
 \begin{thebibliography}{9}
-	\bibitem{Tue} Herlau, Tue et al. "Introduction to Machine Learning and Data Mining: Lecture notes, Fall 2019, version 1.4b" 13/12-19.
+	\bibitem{BH} Benjamini, Y and Hochberg, Y: "Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing", 1995.
+	\bibitem{Tue} Herlau, T et al. "Introduction to Machine Learning and Data Mining: Lecture notes, Fall 2019, version 1.4b" 13/12-19.
 		\bibitem{kine} The University of British Columbia: School of Kinesiology:
 	"Neuromechanical Studies in Kinesiology". \\
 	At:
 	\url{https://kin.educ.ubc.ca/research/neuro-mechanical/} (consulted 19/01-20)
-	\bibitem{KNN} Ripley, Brian: "Package ’class’", 01/01-19 .\\
+	\bibitem{KNN} Ripley, B.: "Package ’class’", 01/01-19 .\\
 	At:
 	\url{https://cran.r-project.org/web/packages/class/class.pdf} (consulted 16/01-20)
-	\bibitem{Tree} Ripley, Brian: "Package ‘tree’", 26/05-19.\\ At: \url{https://cran.r-project.org/web/packages/tree/tree.pdf} (consulted 16/01-20)
-	\bibitem{Deviance} Ritschard, Gilbard: "Computing and using the deviance with classification trees", 01-06.\\
+	\bibitem{Tree} Ripley, B.: "Package ‘tree’", 26/05-19.\\ At: \url{https://cran.r-project.org/web/packages/tree/tree.pdf} (consulted 16/01-20)
+	\bibitem{Deviance} Ritschard, G.: "Computing and using the deviance with classification trees", 01-06.\\
 	 At:
 	\url{http://mephisto.unige.ch/pub/publications/gr/ritschard_compstat06.pdf} (consulted 16/01-20)
-	\bibitem{BH} Benjamini, Y and Hochberg, Y: "Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing", 1995.\\ At:
 	\url{http://www.math.tau.ac.il/~ybenja/MyPapers/benjamini_hochberg1995.pdf} (consulted 20/01-20)
 
 \end{thebibliography}
 \appendix
 \newpage 
 \section{Figures}
-\begin{figure}[H]
-	
-	\centering
-	\subfloat{
-		\includegraphics[width=.5\linewidth]{p1_example}
-	}
-	\subfloat{
-		\centering
-		\includegraphics[width=.5\linewidth]{p1_example2}
-	}
-	\caption{Visualization of two first yadda}
-	\label{fig:2dtrajects}
-\end{figure}
 
 \begin{figure}[H]
 	\centering
@@ -346,7 +347,7 @@ The \textit{person} factor was found to have significant differences on every on
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.9\textwidth]{residuals}
+	\includegraphics[width=\textwidth]{residuals}
 	\caption{Distributions of the residuals of linear models for some of the coordinate features.}\label{fig:residuals}
 \end{figure}
 
