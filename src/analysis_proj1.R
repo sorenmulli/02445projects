@@ -114,11 +114,15 @@ for (i in 1:100) {
 	knn.preds[i] <- knn(df[setdiff(1:100, i), 3:302], df[i, 3:302], cl = df[setdiff(1:100, i), ]$person, k = 3);
 }
 
+plot(tree.model)
+text(tree.model)
+
 knn.acc <- mean(knn.preds == df$person);
 tree.acc <- mean(tree.preds == df$person);
 
 knn.acc
 tree.acc
+
 
 #3NN: Classifier 1
 #Tree: Classifier 2

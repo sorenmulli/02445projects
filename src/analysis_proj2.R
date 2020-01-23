@@ -69,7 +69,52 @@ nl_model_oP <- nls(yield ~ alfa * olsenP/(beta + olsenP) , data = Phosphorous,
                   start = list(alfa = 80 , beta = 2))
 summary(nl_model_oP)
 
+set.seed(42)
+control <- nls.control(warnOnly = T)
 
+big_numba <- 1e3
+h0_errors <- rep(NA, big_numba)
+for (i in 1:big_numba) {
+        
+        nas <- is.na(Phosphorous$yield)
+        
+        y <- Phosphorous$yield[!nas]
+        x <- Phosphorous$olsenP[!nas][sample(length(y))]
+        
+        nl_model_oP <- nls(y ~ alfa * x/(beta + x),
+                           start = list(alfa = 80 , beta = 2), control = control)
+        h0_errors[i] <- summary(nl_model_oP)$sigma^2
+        
+}
+hist(h0_errors, breaks = 100, main = "Permutation test: MSE distribution under H0", xlab ="MSE's in Olsen-P Michaelis-Menten")
+stat_obs <- summary(nl_model_oP)$sigma^2
+abline(v = stat_obs, col = "red")
+
+mean(h0_errors < stat_obs)
+
+
+set.seed(42)
+control <- nls.control(warnOnly = T)
+
+big_numba <- 1e3
+h0_errors <- rep(NA, big_numba)
+for (i in 1:big_numba) {
+        
+        nas <- is.na(Phosphorous$yield)
+        
+        y <- Phosphorous$yield[!nas]
+        x <- Phosphorous$DGT[!nas][sample(length(y))]
+        
+        nl_model_oP <- nls(y ~ alfa * x/(beta + x),
+                           start = list(alfa = 80 , beta = 2), control = control)
+        h0_errors[i] <- summary(nl_model_oP)$sigma^2
+        
+}
+hist(h0_errors, breaks = 100, main = "Permutation test: MSE distribution under H0", xlab ="MSE's in DGT Michaelis-Menten")
+stat_obs <- summary(nl_model_dgt)$sigma^2
+abline(v = stat_obs, col = "red")
+
+mean(h0_errors < stat_obs)
 
 simple_model_dgt <- lm(yield ~ DGT, data = Phosphorous)
 summary(simple_model_dgt)
@@ -79,17 +124,22 @@ summary(simple_model_oP)
 
 
 model_dgt <- lm(yield ~ DGT+location, data = Phosphorous)
-anova(model_dgt)
+summary(model_dgt)
 qqnorm(model_dgt$residuals)
 qqline(model_dgt$residuals)
 
 model_oP <- lm(yield ~ olsenP+location, data = Phosphorous)
 anova(model_oP)
+summary(model_oP)
+
+
+
+length(model_oP$residuals)
 qqnorm(model_oP$residuals)
 qqline(model_oP$residuals)
 
 par(mfrow = c(1,1))
-
+Phosphorous
 plot(Phosphorous$DGT, Phosphorous$yield,
      xlab = "DGT-measured bioavailable phosporous [??g/L]",
      ylab = "Harvest yield of barley [hkg/ha]",
@@ -129,8 +179,6 @@ for (k in 1:K) {
 }
 
 legend("bottomright", c("Full (Olsen P, yield) Michaelis-Menten model", "Model for each fold in cross validaiton."),  col = c("red","grey"), lty = "dashed")
-
-
 
 
 

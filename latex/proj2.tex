@@ -81,7 +81,7 @@ As an initial examination, the correlation between yield output and each phospho
 
 To test which measurement predicts the barley yield best beyond linear tendencies, Michaelis-Menten models are used. The nonlinear model is connected to the reaction velocity of enzymes such as nutrients \cite{michment} and assumes for the yield \(y\) and the explanatory measurements \(x\) that:
 \[
-y = \frac{\alpha x}{\beta + x}, x >0
+y \approx \frac{\alpha x}{\beta + x}, x >0
 \]
 The model parameters \(\alpha, \beta\) of nonlinear model are fitted using the yield as target variable and first the DGT measurements and then the Olsen P-measurements as explanatory variables using the R function \texttt{nls} which iteratively fits the parameters using a squared loss criterion.  To estimate the generalization loss of each model, leave-one-out cross-validation over the fields is performed by fitting the models to eight out of the nine and evaluating them on the last for all fields. The starting guesses for each model is kept constant.
 
@@ -137,14 +137,14 @@ The results of the ANCOVA and corresponding \(F\)-test:
 	\begin{tabular}{c | c c c c}
 	\textbf{DGT-model}  &Degrees of freedom & MSE&\(F\)-value&\(p\)-value\\
 	\hline 
-	Location  & 1& 826 & 90 & \(4\ctp{-16}\)\\
-	DGT  & 7&1735 &  188 & \(4\ctp{-13}\)\\
+	Location  & 7& 826 & 90 & \(4\ctp{-16}\)\\
+	DGT  &1 &1735 &  188 & \(4\ctp{-13}\)\\
 	Residuals &25 &9.23 &\\
 	\hline 
 	\textbf{Olsen P-model} &Degrees of freedom & MSE&\(F\)-value&\(p\)-value\\
 	\hline 
-	Location & 1&933 & 101 & \(<2.2\ctp{-16}\)\\
-	Olsen P &7 &982 & 106 & \(2 \ctp{-10}\)\\
+	Location & 7&933 & 101 & \(<2.2\ctp{-16}\)\\
+	Olsen P &1 &982 & 106 & \(2 \ctp{-10}\)\\
 	Residuals &25  &9.23
 	\end{tabular}
 \end{table}\noindent 
